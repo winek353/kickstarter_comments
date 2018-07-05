@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@Service
+@Service("commentsParserService")
 public class CommentsParserService {
     private List<Long> parseIds(String toParse){
         List<Long> ids = new ArrayList<Long>();
