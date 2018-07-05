@@ -9,6 +9,14 @@ public class Comment {
         this.text = text;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public String getText() {
+        return text;
+    }
+
     @Override
     public String toString() {
         return "Comment{" +

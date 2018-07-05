@@ -10,9 +10,9 @@ import java.util.regex.Pattern;
 
 @Service("commentsParserService")
 public class CommentsParserService {
-    private List<Long> parseIds(String toParse){
+    private List<Long> parseIds(String toParse, String endingPatternQuote){
         List<Long> ids = new ArrayList<Long>();
-        Pattern p = Pattern.compile("#comment-(.*?)" + Pattern.quote("\\"));
+        Pattern p = Pattern.compile("#comment-(.*?)" + Pattern.quote(endingPatternQuote));
         Matcher m = p.matcher(toParse);
         while(m.find())
         {
@@ -21,10 +21,10 @@ public class CommentsParserService {
         return ids;
     }
 
-    private List<String> parseCommentTexts(String toParse){
+    private List<String> parseCommentTexts(String toParse, String startingPatternQuote, String endingPatternQuote){
         List<String> texts = new ArrayList<String>();
-        Pattern p = Pattern.compile(Pattern.quote("</a>\\n</span>\\n</h3>\\n<p>") + "(.*?)"
-                + Pattern.quote("</p>\\n"));
+        Pattern p = Pattern.compile(Pattern.quote(startingPatternQuote) + "(.*?)"
+                + Pattern.quote(endingPatternQuote));
         Matcher m = p.matcher(toParse);
         while(m.find())
         {
@@ -44,8 +44,16 @@ public class CommentsParserService {
     }
 
     public List <Comment> parse(String toParse){
-        List<Long> ids = parseIds(toParse);
-        List<String> commentTexts = parseCommentTexts(toParse);
+        List<Long> ids = parseIds(toParse, "\\");
+        List<String> commentTexts = parseCommentTexts(toParse, "</a>\\n</span>\\n</h3>\\n<p>",
+                "</p>\\n");
+
+        return createComments(ids, commentTexts);
+    }
+
+    public List <Comment> parseFromHtml(String toParse){
+        List<Long> ids = parseIds(toParse, "\"");
+        List<String> commentTexts = parseCommentTexts(toParse,"<p>","</p>");
 
         return createComments(ids, commentTexts);
     }

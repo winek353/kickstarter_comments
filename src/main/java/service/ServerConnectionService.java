@@ -21,9 +21,29 @@ public class ServerConnectionService {
         this.commentsParserService = commentsParserService;
     }
 
-    private StringBuffer getJsonFromKickstarter() throws IOException{
+    private StringBuffer getFirstCommentsFromKickstarter(String kickstarterProjectUrl) throws IOException{
+        URL url = new URL(kickstarterProjectUrl + "/comments");
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        con.setRequestMethod("GET");
+        con.connect();
+
+        BufferedReader in = new BufferedReader(
+                new InputStreamReader(con.getInputStream()));
+        String inputLine;
+        StringBuffer content = new StringBuffer();
+        while ((inputLine = in.readLine()) != null) {
+            content.append(inputLine+"\n");
+        }
+        in.close();
+        con.disconnect();
+
+        return content;
+    }
+
+
+    private StringBuffer getJsonFromKickstarter(String kickstarterProjectUrl, String cursor) throws IOException{
 //        https://www.kickstarter.com/projects/petersengames/startropolis/comments?cursor=20899652
-        URL url = new URL("https://www.kickstarter.com/projects/petersengames/startropolis/comments?cursor=20899652");
+        URL url = new URL(kickstarterProjectUrl + "/comments?cursor=" + cursor);
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("GET");
         con.setRequestProperty("x-requested-with", "XMLHttpRequest");
@@ -42,7 +62,20 @@ public class ServerConnectionService {
         return content;
     }
 
-    public List<Comment> getAllComments() throws IOException {
-        return commentsParserService.parse(getJsonFromKickstarter().toString());
+    public List<Comment> getAllComments(String kickstarterProjectUrl) throws IOException {
+        List<Comment> commentList = commentsParserService
+                .parseFromHtml(getFirstCommentsFromKickstarter(kickstarterProjectUrl).toString());
+
+        String cursor;
+        while (commentList.size()%50 == 0){//rozwiązanie na szybko (być może się spętli gdy brak komentarzy!!!),
+            // a serwer czasami nie zwraca 50 komentarzy
+            cursor = String.valueOf(
+                    commentList
+                            .get(commentList.size()-1)
+                            .getId());
+            commentList.addAll(commentsParserService
+                    .parse(getJsonFromKickstarter(kickstarterProjectUrl, cursor).toString()));
+        }
+        return commentList;
     }
 }
