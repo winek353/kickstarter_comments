@@ -63,18 +63,23 @@ public class ServerConnectionService {
     }
 
     public List<Comment> getAllComments(String kickstarterProjectUrl) throws IOException {
+        String toParse = getFirstCommentsFromKickstarter(kickstarterProjectUrl).toString();
+
         List<Comment> commentList = commentsParserService
-                .parseFromHtml(getFirstCommentsFromKickstarter(kickstarterProjectUrl).toString());
+                .parseFromHtml(toParse);
 
         String cursor;
-        while (commentList.size()%50 == 0){//rozwiązanie na szybko (być może się spętli gdy brak komentarzy!!!),
+
+        while (commentsParserService.isMoreComments(toParse)){//rozwiązanie na szybko (być może się spętli gdy brak komentarzy!!!),
             // a serwer czasami nie zwraca 50 komentarzy
             cursor = String.valueOf(
                     commentList
                             .get(commentList.size()-1)
                             .getId());
+            toParse = getJsonFromKickstarter(kickstarterProjectUrl, cursor).toString();
+
             commentList.addAll(commentsParserService
-                    .parse(getJsonFromKickstarter(kickstarterProjectUrl, cursor).toString()));
+                    .parse(toParse));
         }
         return commentList;
     }

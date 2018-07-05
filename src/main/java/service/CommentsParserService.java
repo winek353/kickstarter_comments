@@ -43,6 +43,13 @@ public class CommentsParserService {
         return comments;
     }
 
+    public Boolean isMoreComments(String toParse){
+        if(toParse.contains("&direction=desc") || toParse.contains("Show older comments</a>"))
+            return true;
+        else
+            return false;
+    }
+
     public List <Comment> parse(String toParse){
         List<Long> ids = parseIds(toParse, "\\");
         List<String> commentTexts = parseCommentTexts(toParse, "</a>\\n</span>\\n</h3>\\n<p>",

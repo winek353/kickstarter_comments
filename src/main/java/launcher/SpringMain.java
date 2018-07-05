@@ -16,7 +16,7 @@ public class SpringMain {
                 (ServerConnectionService) ctx.getBean("serverConnectionService");
 
         List<Comment> commentList = serverConnectionService
-                .getAllComments("https://www.kickstarter.com/projects/petersengames/startropolis");
+                .getAllComments("https://www.kickstarter.com/projects/amabrush/amabrush-worlds-first-automatic-toothbrush");
 
         commentList.forEach(System.out::println);
         System.out.println(commentList.size());
