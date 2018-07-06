@@ -18,7 +18,6 @@ public class SpringMain {
         CommentsService commentsService =
                 (CommentsService) ctx.getBean("commentsService");
 
-
         commentsService.getAllCommentsToJsonFile("https://www.kickstarter.com/projects/amabrush/amabrush-worlds-first-automatic-toothbrush", "com");
     }
 }

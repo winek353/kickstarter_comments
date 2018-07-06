@@ -41,6 +41,7 @@ public class CommentsService {
             commentList.addAll(commentsParserService
                     .parse(toParse));
         }
+        System.out.println(commentList.size());
         return commentList;
     }
 

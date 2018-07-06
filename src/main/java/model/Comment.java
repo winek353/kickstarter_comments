@@ -2,10 +2,12 @@ package model;
 
 public class Comment {
     private Long id;
+    private String author;
     private String text;
 
-    public Comment(Long id, String text) {
+    public Comment(Long id, String author, String text) {
         this.id = id;
+        this.author = author;
         this.text = text;
     }
 

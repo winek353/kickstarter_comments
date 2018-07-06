@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Service("commentsParserService")
 public class CommentsParserService {
@@ -33,11 +34,26 @@ public class CommentsParserService {
         return texts;
     }
 
-    private List <Comment> createComments(List<Long> ids,  List<String> commentTexts){
+    private List<String> parseAuthors(String toParse){
+        List<String> authors = new ArrayList<String>();
+        Pattern p = Pattern.compile("author green-dark" + "(.*?)"
+                + "</a>");
+        Matcher m = p.matcher(toParse);
+        while(m.find())
+        {
+            authors.add(m.group(1));
+        }
+
+        return authors.stream()
+                .map(a-> a.substring(a.lastIndexOf(">") +1))
+                .collect(Collectors.toList());
+    }
+
+    private List <Comment> createComments(List<Long> ids, List<String> authors,  List<String> commentTexts){
         List <Comment> comments = new ArrayList<>();
 
         for(int i=0;i<ids.size();i++){
-            comments.add(new Comment(ids.get(i), commentTexts.get(i)));
+            comments.add(new Comment(ids.get(i), authors.get(i), commentTexts.get(i)));
         }
 
         return comments;
@@ -52,16 +68,20 @@ public class CommentsParserService {
 
     public List <Comment> parse(String toParse){
         List<Long> ids = parseIds(toParse, "\\");
+        List<String> authors = parseAuthors(toParse);
         List<String> commentTexts = parseCommentTexts(toParse, "</a>\\n</span>\\n</h3>\\n<p>",
                 "</p>\\n");
 
-        return createComments(ids, commentTexts);
+
+
+        return createComments(ids, authors, commentTexts  );
     }
 
     public List <Comment> parseFromHtml(String toParse){
         List<Long> ids = parseIds(toParse, "\"");
-        List<String> commentTexts = parseCommentTexts(toParse,"<p>","</p>");
+        List<String> authors = parseAuthors(toParse);
+        List<String> commentTexts = parseCommentTexts(toParse,"</h3><p>","</p>");
 
-        return createComments(ids, commentTexts);
+        return createComments(ids, authors, commentTexts);
     }
 }
