@@ -8,9 +8,9 @@
 
 <AnchorPane id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <TextField id="text" layoutX="157.0" layoutY="14.0" prefHeight="25.0" prefWidth="188.0" />
+      <TextField id="URL" layoutX="157.0" layoutY="14.0" prefHeight="25.0" prefWidth="188.0" />
       <Button id="button" layoutX="365.0" layoutY="14.0" mnemonicParsing="false" text="Button" />
-      <ScrollPane id="scrollPane" hbarPolicy="NEVER" layoutX="2.0" layoutY="186.0"  prefWidth="594.0">
+      <ScrollPane id="scrollPane" hbarPolicy="NEVER" layoutX="0.0" layoutY="100.0"  prefWidth="594.0">
          <content>
             <VBox id="vbox" prefHeight="400.0">
             </VBox>

@@ -8,6 +8,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
@@ -36,8 +37,14 @@ public class Main extends Application {
 
         Scene scene = primaryStage.getScene();
         Button btn = (Button)scene.lookup("#button");
-        btn.setText("sdfsdf");
-        btn.setOnAction((x)->btn.setText("11111"));
+        btn.setText("Get Comments from url");
+        btn.setOnAction((x)->{
+            String url = ((TextField)scene.lookup("#URL")).getText().toString();
+            VBox vbox = (VBox) scene.lookup("#vbox");
+            ScrollPane scrollPane = (ScrollPane) scene.lookup("#scrollPane");
+            vbox.setSpacing(50);
+            showComments(url, vbox, scrollPane);
+        });
         Text text = new Text();
         Text text2 = new Text();
         text.setText("1111");
@@ -48,7 +55,7 @@ public class Main extends Application {
         VBox vbox = (VBox) scene.lookup("#vbox");
         ScrollPane scrollPane = (ScrollPane) scene.lookup("#scrollPane");
         vbox.setSpacing(50);
-        showComments(vbox, scrollPane);
+        //showComments(vbox, scrollPane);
         vbox.prefWidthProperty().bind(mainPane.widthProperty());
         scrollPane.prefWidthProperty().bind(mainPane.widthProperty());
         scrollPane.prefHeightProperty().bind(mainPane.heightProperty());
@@ -80,14 +87,13 @@ public class Main extends Application {
 
     }
 
-    private List<Comment> getAllComments(){
+    private List<Comment> getAllComments(String url){
         ApplicationContext ctx = new AnnotationConfigApplicationContext("service");
         CommentsService commentsService =
                 (CommentsService) ctx.getBean("commentsService");
         List<Comment> comments = null;
         try {
-            comments = commentsService.getAllComments("https://www.kickstarter.com/projects/steamforged/critical-role");
-
+            comments = commentsService.getAllComments(url);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -97,8 +103,8 @@ public class Main extends Application {
         return comments;
     }
 
-    private void showComments(VBox vbox, ScrollPane scrollPane){
-        List<Comment> comments = getAllComments();
+    private void showComments(String url, VBox vbox, ScrollPane scrollPane){
+        List<Comment> comments = getAllComments(url);
         comments.forEach(x->addComment(x,vbox, scrollPane));
     }
 
