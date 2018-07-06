@@ -36,6 +36,25 @@ public class Main extends Application {
         primaryStage.show();
 
         Scene scene = primaryStage.getScene();
+        setButtonsActions(scene);
+        asd(scene);
+
+
+        primaryStage.show();
+    }
+
+    private void asd(Scene scene){//dac jakas nazwe
+        AnchorPane mainPane = (AnchorPane) scene.lookup("#mainPane");
+
+        VBox vbox = (VBox) scene.lookup("#vbox");
+        ScrollPane scrollPane = (ScrollPane) scene.lookup("#scrollPane");
+        vbox.setSpacing(50);
+        vbox.prefWidthProperty().bind(mainPane.widthProperty());
+        scrollPane.prefWidthProperty().bind(mainPane.widthProperty());
+        scrollPane.prefHeightProperty().bind(mainPane.heightProperty().subtract(100));
+    }
+
+    private void setButtonsActions(Scene scene){
         Button btn = (Button)scene.lookup("#button");
         btn.setText("Get Comments from url");
         btn.setOnAction((x)->{
@@ -45,27 +64,8 @@ public class Main extends Application {
             vbox.setSpacing(50);
             showComments(url, vbox, scrollPane);
         });
-        Text text = new Text();
-        Text text2 = new Text();
-        text.setText("1111");
-        text2.setText("2222");
-
-        AnchorPane mainPane = (AnchorPane) scene.lookup("#mainPane");
-
-        VBox vbox = (VBox) scene.lookup("#vbox");
-        ScrollPane scrollPane = (ScrollPane) scene.lookup("#scrollPane");
-        vbox.setSpacing(50);
-        //showComments(vbox, scrollPane);
-        vbox.prefWidthProperty().bind(mainPane.widthProperty());
-        scrollPane.prefWidthProperty().bind(mainPane.widthProperty());
-        scrollPane.prefHeightProperty().bind(mainPane.heightProperty());
-//        vbox.getChildren().add(createAnchorPane());
-//        vbox.getChildren().add(createAnchorPane());
-//        vbox.getChildren().add(createAnchorPane());
-//        vbox.getChildren().add(createAnchorPane());
-
-        primaryStage.show();
     }
+
     public AnchorPane createAnchorPane(Comment comment, ScrollPane scrollPane){
         AnchorPane anchorPane = new AnchorPane();
         anchorPane.prefHeight(100);
@@ -74,9 +74,9 @@ public class Main extends Application {
         ImageView imageView = new ImageView();
         anchorPane.getChildren().add(imageView);
 
-        Label label = createUsernameLAbel();
+        Label label = createUsernameLAbel(comment.getAuthor());
 
-        Label label2 = createCommentTimeLabel();
+        Label label2 = createCommentTimeLabel("");
 
         Label label3 = createCommentLabel(comment.getText());
        // label3.prefWidthProperty().bind(vbox.widthProperty());
@@ -113,17 +113,18 @@ public class Main extends Application {
         vbox.getChildren().add(a);
     }
 
-    public Label createUsernameLAbel(){
+    public Label createUsernameLAbel(String username){
         Label label = new Label();
+        label.setStyle("-fx-font-weight: bold");
         label.setLayoutX(45);
         label.setLayoutY(28);
         label.setPrefHeight(15);
         label.setPrefWidth(150);
-        label.setText("aaaaaa123");
+        label.setText(username);
         return label;
     }
 
-    public  Label createCommentTimeLabel(){
+    public  Label createCommentTimeLabel(String time){
         Label label = new Label();
         label.setText("3 hours ago");
         label.setLayoutX(160);
