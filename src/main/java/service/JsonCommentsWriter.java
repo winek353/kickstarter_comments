@@ -16,8 +16,7 @@ import java.util.List;
 public class JsonCommentsWriter {
 
     public void writeToFile(List<Comment> commentList, String outDirectory) throws ParseException {
-
-        try (Writer writer = new FileWriter(new File(outDirectory) )) {
+        try (Writer writer = new FileWriter(new File(outDirectory + ".json") )) {
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             gson.toJson(commentList, writer);
         } catch (IOException e) {

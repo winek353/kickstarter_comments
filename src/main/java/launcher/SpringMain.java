@@ -15,19 +15,10 @@ public class SpringMain {
 
     public static void main(String[] args) throws IOException, ParseException {
         ApplicationContext ctx = new AnnotationConfigApplicationContext("service");
-        ServerConnectionService serverConnectionService =
-                (ServerConnectionService) ctx.getBean("serverConnectionService");
+        CommentsService commentsService =
+                (CommentsService) ctx.getBean("commentsService");
 
-        JsonCommentsWriter jsonCommentsWriter = (JsonCommentsWriter)  ctx.getBean("jsonCommentsWriter");
 
-        List<Comment> commentList = serverConnectionService
-                .getAllComments("https://www.kickstarter.com/projects/amabrush/amabrush-worlds-first-automatic-toothbrush");
-
-        jsonCommentsWriter.writeToFile(commentList, "comments.json");
-
-        commentList.forEach(System.out::println);
-        System.out.println(commentList.size());
+        commentsService.getAllCommentsToJsonFile("https://www.kickstarter.com/projects/amabrush/amabrush-worlds-first-automatic-toothbrush", "com");
     }
-
-
 }

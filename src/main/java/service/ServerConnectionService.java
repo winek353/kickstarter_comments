@@ -21,7 +21,7 @@ public class ServerConnectionService {
         this.commentsParserService = commentsParserService;
     }
 
-    private StringBuffer getFirstCommentsFromKickstarter(String kickstarterProjectUrl) throws IOException{
+    StringBuffer getFirstCommentsFromKickstarter(String kickstarterProjectUrl) throws IOException{
         URL url = new URL(kickstarterProjectUrl + "/comments");
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("GET");
@@ -41,7 +41,7 @@ public class ServerConnectionService {
     }
 
 
-    private StringBuffer getJsonFromKickstarter(String kickstarterProjectUrl, String cursor) throws IOException{
+    StringBuffer getJsonFromKickstarter(String kickstarterProjectUrl, String cursor) throws IOException{
 //        https://www.kickstarter.com/projects/petersengames/startropolis/comments?cursor=20899652
         URL url = new URL(kickstarterProjectUrl + "/comments?cursor=" + cursor);
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -60,27 +60,5 @@ public class ServerConnectionService {
         con.disconnect();
 
         return content;
-    }
-
-    public List<Comment> getAllComments(String kickstarterProjectUrl) throws IOException {
-        String toParse = getFirstCommentsFromKickstarter(kickstarterProjectUrl).toString();
-
-        List<Comment> commentList = commentsParserService
-                .parseFromHtml(toParse);
-
-        String cursor;
-
-        while (commentsParserService.isMoreComments(toParse)){//rozwiązanie na szybko (być może się spętli gdy brak komentarzy!!!),
-            // a serwer czasami nie zwraca 50 komentarzy
-            cursor = String.valueOf(
-                    commentList
-                            .get(commentList.size()-1)
-                            .getId());
-            toParse = getJsonFromKickstarter(kickstarterProjectUrl, cursor).toString();
-
-            commentList.addAll(commentsParserService
-                    .parse(toParse));
-        }
-        return commentList;
     }
 }
