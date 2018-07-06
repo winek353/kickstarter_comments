@@ -37,7 +37,10 @@ public class Main extends Application {
         vbox.getChildren().add(createAnchorPane());
         vbox.getChildren().add(createAnchorPane());
         vbox.getChildren().add(createAnchorPane());
-        vbox.getChildren().add(createAnchorPane());
+        for(int i=0;i<100000;i++){
+
+            vbox.getChildren().add(createAnchorPane());
+        }
 
         primaryStage.show();
     }
