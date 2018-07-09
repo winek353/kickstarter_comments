@@ -3,9 +3,7 @@ package launcher;
 import model.Comment;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import service.CommentsService;
-import service.JsonCommentsWriter;
-import service.ServerConnectionService;
+import service.CommentsService;;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -18,6 +16,10 @@ public class SpringMain {
         CommentsService commentsService =
                 (CommentsService) ctx.getBean("commentsService");
 
-        commentsService.getAllCommentsToJsonFile("https://www.kickstarter.com/projects/amabrush/amabrush-worlds-first-automatic-toothbrush", "com");
+        String kickstarterProjectUrl = "https://www.kickstarter.com/projects/petersengames/startropolis";
+//        commentsService.getAllCommentsToJsonFile(kickstarterProjectUrl, "com");
+        List<Comment> comments = commentsService.getAllComments(kickstarterProjectUrl);
+        comments.forEach(c-> System.out.println(c));
+        System.out.println(comments.size());
     }
 }

@@ -17,7 +17,7 @@ public class JsonCommentsWriter {
 
     public void writeToFile(List<Comment> commentList, String outDirectory) throws ParseException {
         try (Writer writer = new FileWriter(new File(outDirectory + ".json") )) {
-            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
             gson.toJson(commentList, writer);
         } catch (IOException e) {
             e.getMessage();

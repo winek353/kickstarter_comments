@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service("commentsService")
@@ -27,21 +28,22 @@ public class CommentsService {
 
     public List<Comment> getAllComments(String kickstarterProjectUrl) throws IOException {
         String toParse = serverConnectionService.getFirstCommentsFromKickstarter(kickstarterProjectUrl).toString();
-        List<Comment> commentList = commentsParserService
-                .parseFromHtml(toParse);
-        String cursor;
+
+        String cursor = commentsParserService.getCursorFromHtml(toParse);
+
+        List<Comment> commentList = new ArrayList<>();
 
         while (commentsParserService.isMoreComments(toParse)){
-            cursor = String.valueOf(
-                    commentList
-                            .get(commentList.size()-1)
-                            .getId());
             toParse = serverConnectionService.getJsonFromKickstarter(kickstarterProjectUrl, cursor).toString();
 
             commentList.addAll(commentsParserService
                     .parse(toParse));
+
+            cursor = String.valueOf(
+                    commentList
+                            .get(commentList.size()-1)
+                            .getId());
         }
-        System.out.println(commentList.size());
         return commentList;
     }
 

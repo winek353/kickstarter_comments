@@ -1,9 +1,11 @@
 package service;
 
+import com.sun.xml.internal.ws.api.ha.StickyFeature;
 import model.Comment;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -11,6 +13,28 @@ import java.util.stream.Collectors;
 
 @Service("commentsParserService")
 public class CommentsParserService {
+    private static List<String> allBadges = Arrays.asList("Creator", "Collaborator", "Superbacker", "20-time creator");
+
+    private List<String> extractComments(String toParse, String startingPatternQuote, String endingPatternQuote){
+        List<String> comments = new ArrayList<>();
+        Pattern p = Pattern.compile(Pattern.quote(startingPatternQuote) + "(.*?)"
+                + Pattern.quote(endingPatternQuote));
+        Matcher m = p.matcher(toParse);
+        while(m.find())
+        {
+            comments.add(m.group(1));
+        }
+        return comments;
+    }
+
+    String getCursorFromHtml(String toParse){//do poprawy prawdopodobnie bo ucina pierwszy komentarz
+        String result = parseCommentTexts(toParse, "<a class=\"grey-dark\" href=\"",
+                ">").get(0);
+        result = parseCommentTexts(result, "cursor=",
+                "#comment-").get(0);
+        return result;
+    }
+
     private List<Long> parseIds(String toParse, String endingPatternQuote){
         List<Long> ids = new ArrayList<Long>();
         Pattern p = Pattern.compile("#comment-(.*?)" + Pattern.quote(endingPatternQuote));
@@ -49,39 +73,40 @@ public class CommentsParserService {
                 .collect(Collectors.toList());
     }
 
-    private List <Comment> createComments(List<Long> ids, List<String> authors,  List<String> commentTexts){
-        List <Comment> comments = new ArrayList<>();
+    private List<String> getBadges(String toParse){
+        List<String> badges = new ArrayList<>();
 
-        for(int i=0;i<ids.size();i++){
-            comments.add(new Comment(ids.get(i), authors.get(i), commentTexts.get(i)));
+        for (String badge: allBadges) {
+            if(toParse.contains(badge))
+                badges.add(badge);
         }
-
-        return comments;
+        return badges;
     }
 
-    public Boolean isMoreComments(String toParse){
+
+     Boolean isMoreComments(String toParse){
         if(toParse.contains("&direction=desc") || toParse.contains("Show older comments</a>"))
             return true;
         else
             return false;
     }
 
-    public List <Comment> parse(String toParse){
-        List<Long> ids = parseIds(toParse, "\\");
-        List<String> authors = parseAuthors(toParse);
-        List<String> commentTexts = parseCommentTexts(toParse, "</a>\\n</span>\\n</h3>\\n<p>",
-                "</p>\\n");
 
+    List <Comment> parse(String toParse){
+        List<String> RawCommentsToParse = extractComments(toParse, "class=\\\"main clearfix pl3 ml3\\",
+                "<span class=\\\"loading icon-loading-small");
 
+        List<Comment> commentList = new ArrayList<>();
+        for (String commentToParse: RawCommentsToParse) {
+            Long id = parseIds(commentToParse, "\\").get(0);
+            String author = parseAuthors(commentToParse).get(0);
+            String commentText = parseCommentTexts(commentToParse, "</a>\\n</span>\\n</h3>\\n<p>",
+                    "</p>\\n").get(0);
+            List<String> badges = getBadges(commentToParse);
+            commentList.add(new Comment(id, author, commentText, badges));
+        }
 
-        return createComments(ids, authors, commentTexts  );
+        return commentList;
     }
 
-    public List <Comment> parseFromHtml(String toParse){
-        List<Long> ids = parseIds(toParse, "\"");
-        List<String> authors = parseAuthors(toParse);
-        List<String> commentTexts = parseCommentTexts(toParse,"</h3><p>","</p>");
-
-        return createComments(ids, authors, commentTexts);
-    }
 }
