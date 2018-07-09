@@ -1,6 +1,5 @@
 package service;
 
-import com.sun.xml.internal.ws.api.ha.StickyFeature;
 import model.Comment;
 import org.springframework.stereotype.Service;
 
@@ -9,7 +8,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 @Service("commentsParserService")
 public class CommentsParserService {
@@ -27,26 +25,15 @@ public class CommentsParserService {
         return comments;
     }
 
-    String getCursorFromHtml(String toParse){//do poprawy prawdopodobnie bo ucina pierwszy komentarz
-        String result = parseCommentTexts(toParse, "<a class=\"grey-dark\" href=\"",
+    String getCursorFromHtml(String toParse){
+        String result = getDataBetween(toParse, "<a class=\"grey-dark\" href=\"",
                 ">").get(0);
-        result = parseCommentTexts(result, "cursor=",
+        result = getDataBetween(result, "cursor=",
                 "#comment-").get(0);
         return result;
     }
 
-    private List<Long> parseIds(String toParse, String endingPatternQuote){
-        List<Long> ids = new ArrayList<Long>();
-        Pattern p = Pattern.compile("#comment-(.*?)" + Pattern.quote(endingPatternQuote));
-        Matcher m = p.matcher(toParse);
-        while(m.find())
-        {
-            ids.add(Long.parseLong(m.group(1)));
-        }
-        return ids;
-    }
-
-    private List<String> parseCommentTexts(String toParse, String startingPatternQuote, String endingPatternQuote){
+    private List<String> getDataBetween(String toParse, String startingPatternQuote, String endingPatternQuote){
         List<String> texts = new ArrayList<String>();
         Pattern p = Pattern.compile(Pattern.quote(startingPatternQuote) + "(.*?)"
                 + Pattern.quote(endingPatternQuote));
@@ -56,21 +43,6 @@ public class CommentsParserService {
             texts.add(m.group(1));
         }
         return texts;
-    }
-
-    private List<String> parseAuthors(String toParse){
-        List<String> authors = new ArrayList<String>();
-        Pattern p = Pattern.compile("author green-dark" + "(.*?)"
-                + "</a>");
-        Matcher m = p.matcher(toParse);
-        while(m.find())
-        {
-            authors.add(m.group(1));
-        }
-
-        return authors.stream()
-                .map(a-> a.substring(a.lastIndexOf(">") +1))
-                .collect(Collectors.toList());
     }
 
     private List<String> getBadges(String toParse){
@@ -85,22 +57,28 @@ public class CommentsParserService {
 
 
      Boolean isMoreComments(String toParse){
-        if(toParse.contains("&direction=desc") || toParse.contains("Show older comments</a>"))
-            return true;
-        else
-            return false;
+         String commentsCount = null;
+         if(!getDataBetween(toParse,
+                 "comments-count=\"", "\"").isEmpty()){
+             commentsCount = getDataBetween(toParse,
+                     "comments-count=\"", "\"").get(0);
+         }
+
+         return toParse.contains("&direction=desc") || commentsCount != null;
     }
 
 
     List <Comment> parse(String toParse){
-        List<String> RawCommentsToParse = extractComments(toParse, "class=\\\"main clearfix pl3 ml3\\",
+        List<String> rawCommentsToParse = extractComments(toParse, "class=\\\"main clearfix pl3 ml3\\",
                 "<span class=\\\"loading icon-loading-small");
 
         List<Comment> commentList = new ArrayList<>();
-        for (String commentToParse: RawCommentsToParse) {
-            Long id = parseIds(commentToParse, "\\").get(0);
-            String author = parseAuthors(commentToParse).get(0);
-            String commentText = parseCommentTexts(commentToParse, "</a>\\n</span>\\n</h3>\\n<p>",
+        for (String commentToParse: rawCommentsToParse) {
+            Long id = Long.valueOf(getDataBetween(commentToParse,
+                    "#comment-",  "\\").get(0));//parseIds(commentToParse, "\\").get(0);
+            String author = getDataBetween(commentToParse, "author green-dark",
+                    "</a>").get(0);
+            String commentText = getDataBetween(commentToParse, "</a>\\n</span>\\n</h3>\\n<p>",
                     "</p>\\n").get(0);
             List<String> badges = getBadges(commentToParse);
             commentList.add(new Comment(id, author, commentText, badges));
