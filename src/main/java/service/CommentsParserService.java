@@ -88,6 +88,10 @@ public class CommentsParserService {
          return ! comment.contains("This comment has been removed by Kickstarter");
     }
 
+    public String removeTagsFromText(String text){
+        return text.replaceAll("<br[\\s/]*>", "");
+    }
+
 
     List <Comment> parse(String toParse){
         List<String> rawCommentsToParse = extractComments(toParse, "class=\\\"main clearfix pl3 ml3\\",
@@ -104,6 +108,9 @@ public class CommentsParserService {
                 String author = getAuthor(commentToParse);
                 String commentText = getDataBetween(commentToParse, "</a>\\n</span>\\n</h3>\\n<p>",
                         "</p>\\n").get(0);
+
+                commentText = removeTagsFromText(commentText);
+
                 List<String> badges = getBadges(commentToParse);
                 String date = getDate(commentToParse);
                 commentList.add(new Comment(id, author, commentText, badges, date));
