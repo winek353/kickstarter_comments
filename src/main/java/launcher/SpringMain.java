@@ -17,11 +17,12 @@ public class SpringMain {
         CommentsService commentsService =
                 (CommentsService) ctx.getBean("commentsService");
 
-        String kickstarterProjectUrl = "https://www.kickstarter.com/projects/1041610927/znaps-the-9-magnetic-adapter-for-your-mobile-devic";
-        commentsService.getAllCommentsToJsonFile(kickstarterProjectUrl, "com");
+        String kickstarterProjectUrl = "https://www.kickstarter.com/projects/bdgames/assault-on-doomrock-doompocalypse";
+//        commentsService.getAllCommentsToJsonFile(kickstarterProjectUrl, "com");
 //        List<Comment> comments = commentsService.getAllComments(kickstarterProjectUrl);
 //        comments.forEach(c-> System.out.println(c));
 //        System.out.println(comments.size());
+        commentsService.getAllCommentsFromJsonFile("com").forEach(c-> System.out.println(c));
 
 
 

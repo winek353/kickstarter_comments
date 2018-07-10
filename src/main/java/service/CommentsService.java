@@ -4,6 +4,7 @@ import model.Comment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -15,15 +16,15 @@ public class CommentsService {
 
     private CommentsParserService commentsParserService;
 
-    private JsonCommentsWriter jsonCommentsWriter;
+    private JsonCommentsService jsonCommentsService;
 
     @Autowired
     public CommentsService(ServerConnectionService serverConnectionService,
                            CommentsParserService commentsParserService,
-                           JsonCommentsWriter jsonCommentsWriter) {
+                           JsonCommentsService jsonCommentsService) {
         this.serverConnectionService = serverConnectionService;
         this.commentsParserService = commentsParserService;
-        this.jsonCommentsWriter = jsonCommentsWriter;
+        this.jsonCommentsService = jsonCommentsService;
     }
 
     public List<Comment> getAllComments(String kickstarterProjectUrl) throws IOException {
@@ -50,7 +51,10 @@ public class CommentsService {
     public void getAllCommentsToJsonFile(String kickstarterProjectUrl, String jsonFileName) throws IOException, ParseException {
         List<Comment> commentList =
                 getAllComments(kickstarterProjectUrl);
-        jsonCommentsWriter.writeToFile(commentList, jsonFileName);
+        jsonCommentsService.writeToFile(commentList, jsonFileName);
     }
 
+    public List<Comment> getAllCommentsFromJsonFile(String jsonFileName) throws FileNotFoundException, ParseException {
+        return jsonCommentsService.readFromFile(jsonFileName);
+    }
 }

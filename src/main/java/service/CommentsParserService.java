@@ -98,10 +98,6 @@ public class CommentsParserService {
 //         return ! comment.contains("This comment has been removed by Kickstarter")
     }
 
-//    public String removeTagsFromText(String text){
-//        return text.replaceAll("<br[\\s/]*>", "");
-//    }
-
     private String removeHtmlTags(String html) {
         return Jsoup.parse(html).text();
     }
@@ -112,7 +108,6 @@ public class CommentsParserService {
 
         List<Comment> commentList = new ArrayList<>();
         for (String commentToParse: rawCommentsToParse) {
-            System.out.println(commentToParse);
             if(isCommentValid(commentToParse)){
                 Long id = Long.valueOf(getDataBetween(commentToParse,
                         "#comment-",  "\\").get(0));

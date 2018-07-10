@@ -12,18 +12,13 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import model.Comment;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import service.CommentsParserService;
 import service.CommentsService;
-import service.JsonCommentsWriter;
-import service.ServerConnectionService;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class Main extends Application {
