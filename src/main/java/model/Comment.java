@@ -7,19 +7,14 @@ public class Comment {
     private String author;
     private String text;
     private List<String> badges;
+    private String date;
 
-//    public Comment(Long id, String author, String text) {
-//        this.id = id;
-//        this.author = author;
-//        this.text = text;
-//    }
-
-
-    public Comment(Long id, String author, String text, List<String> badges) {
+    public Comment(Long id, String author, String text, List<String> badges, String date) {
         this.id = id;
         this.author = author;
         this.text = text;
         this.badges = badges;
+        this.date = date;
     }
 
     public Long getId() {
@@ -34,12 +29,22 @@ public class Comment {
         return author;
     }
 
+    public List<String> getBadges() {
+        return badges;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
     @Override
     public String toString() {
         return "Comment{" +
                 "id=" + id +
                 ", author='" + author + '\'' +
                 ", text='" + text + '\'' +
+                ", badges=" + badges +
+                ", date='" + date + '\'' +
                 '}';
     }
 }

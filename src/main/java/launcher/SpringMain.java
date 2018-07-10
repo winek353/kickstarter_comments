@@ -16,10 +16,10 @@ public class SpringMain {
         CommentsService commentsService =
                 (CommentsService) ctx.getBean("commentsService");
 
-        String kickstarterProjectUrl = "https://www.kickstarter.com/projects/petersengames/startropolis";
-//        commentsService.getAllCommentsToJsonFile(kickstarterProjectUrl, "com");
-        List<Comment> comments = commentsService.getAllComments(kickstarterProjectUrl);
-        comments.forEach(c-> System.out.println(c));
-        System.out.println(comments.size());
+        String kickstarterProjectUrl = "https://www.kickstarter.com/projects/amabrush/amabrush-worlds-first-automatic-toothbrush";
+        commentsService.getAllCommentsToJsonFile(kickstarterProjectUrl, "com");
+//        List<Comment> comments = commentsService.getAllComments(kickstarterProjectUrl);
+//        comments.forEach(c-> System.out.println(c));
+//        System.out.println(comments.size());
     }
 }

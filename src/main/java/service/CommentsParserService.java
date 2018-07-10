@@ -55,6 +55,23 @@ public class CommentsParserService {
         return badges;
     }
 
+    private String getDate(String toParse){
+        if(toParse.contains("datetime=\\\""))
+            return getDataBetween(toParse, "datetime=\\\"", "\\\"").get(0);
+        else{
+            String result = getDataBetween(toParse, "#comment-", "</h3>\\n<p>")
+                    .get(0);
+            return getDataBetween(result, "\\\">", "</a>").get(0);
+        }
+    }
+
+    private String getAuthor(String toParse){
+        String result = getDataBetween(toParse, "href=\\\"/profile/",
+                "<span").get(0);
+        return getDataBetween(result, "\\\">",
+                "</a>").get(0);
+    }
+
 
      Boolean isMoreComments(String toParse){
          String commentsCount = null;
@@ -67,21 +84,30 @@ public class CommentsParserService {
          return toParse.contains("&direction=desc") || commentsCount != null;
     }
 
+    private boolean isCommentValid(String comment){
+         return ! comment.contains("This comment has been removed by Kickstarter");
+    }
+
 
     List <Comment> parse(String toParse){
         List<String> rawCommentsToParse = extractComments(toParse, "class=\\\"main clearfix pl3 ml3\\",
                 "<span class=\\\"loading icon-loading-small");
 
+//        System.out.println("tutaj ");
+//        rawCommentsToParse.forEach(s-> System.out.println(s));
+
         List<Comment> commentList = new ArrayList<>();
         for (String commentToParse: rawCommentsToParse) {
-            Long id = Long.valueOf(getDataBetween(commentToParse,
-                    "#comment-",  "\\").get(0));//parseIds(commentToParse, "\\").get(0);
-            String author = getDataBetween(commentToParse, "author green-dark",
-                    "</a>").get(0);
-            String commentText = getDataBetween(commentToParse, "</a>\\n</span>\\n</h3>\\n<p>",
-                    "</p>\\n").get(0);
-            List<String> badges = getBadges(commentToParse);
-            commentList.add(new Comment(id, author, commentText, badges));
+            if(isCommentValid(commentToParse)){
+                Long id = Long.valueOf(getDataBetween(commentToParse,
+                        "#comment-",  "\\").get(0));
+                String author = getAuthor(commentToParse);
+                String commentText = getDataBetween(commentToParse, "</a>\\n</span>\\n</h3>\\n<p>",
+                        "</p>\\n").get(0);
+                List<String> badges = getBadges(commentToParse);
+                String date = getDate(commentToParse);
+                commentList.add(new Comment(id, author, commentText, badges, date));
+            }
         }
 
         return commentList;
