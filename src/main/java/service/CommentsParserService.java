@@ -1,6 +1,7 @@
 package service;
 
 import model.Comment;
+import org.jsoup.Jsoup;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -33,7 +34,7 @@ public class CommentsParserService {
         return result;
     }
 
-    private List<String> getDataBetween(String toParse, String startingPatternQuote, String endingPatternQuote){
+    public List<String> getDataBetween(String toParse, String startingPatternQuote, String endingPatternQuote){
         List<String> texts = new ArrayList<String>();
         Pattern p = Pattern.compile(Pattern.quote(startingPatternQuote) + "(.*?)"
                 + Pattern.quote(endingPatternQuote));
@@ -72,6 +73,10 @@ public class CommentsParserService {
                 "</a>").get(0);
     }
 
+    private String getComment(String toParse){
+        return toParse.substring(toParse.indexOf("</a>\\n</span>\\n</h3>\\n<p>"));
+    }
+
 
      Boolean isMoreComments(String toParse){
          String commentsCount = null;
@@ -85,31 +90,38 @@ public class CommentsParserService {
     }
 
     private boolean isCommentValid(String comment){
-         return ! comment.contains("This comment has been removed by Kickstarter");
+         if(comment.contains("This comment has been removed by Kickstarter") ||
+                 comment.contains("The author of this comment has been deleted"))
+             return false;
+         else
+             return true;
+//         return ! comment.contains("This comment has been removed by Kickstarter")
     }
 
-    public String removeTagsFromText(String text){
-        return text.replaceAll("<br[\\s/]*>", "");
-    }
+//    public String removeTagsFromText(String text){
+//        return text.replaceAll("<br[\\s/]*>", "");
+//    }
 
+    private String removeHtmlTags(String html) {
+        return Jsoup.parse(html).text();
+    }
 
     List <Comment> parse(String toParse){
         List<String> rawCommentsToParse = extractComments(toParse, "class=\\\"main clearfix pl3 ml3\\",
                 "<span class=\\\"loading icon-loading-small");
 
-//        System.out.println("tutaj ");
-//        rawCommentsToParse.forEach(s-> System.out.println(s));
-
         List<Comment> commentList = new ArrayList<>();
         for (String commentToParse: rawCommentsToParse) {
+            System.out.println(commentToParse);
             if(isCommentValid(commentToParse)){
                 Long id = Long.valueOf(getDataBetween(commentToParse,
                         "#comment-",  "\\").get(0));
                 String author = getAuthor(commentToParse);
+//                String commentText = getComment(commentToParse);
                 String commentText = getDataBetween(commentToParse, "</a>\\n</span>\\n</h3>\\n<p>",
                         "</p>\\n").get(0);
 
-                commentText = removeTagsFromText(commentText);
+                commentText = removeHtmlTags(commentText);
 
                 List<String> badges = getBadges(commentToParse);
                 String date = getDate(commentToParse);
