@@ -16,15 +16,15 @@ public class CommentsService {
 
     private CommentsParserService commentsParserService;
 
-    private JsonCommentsService jsonCommentsService;
+    private JsonFileService jsonFileService;
 
     @Autowired
     public CommentsService(ServerConnectionService serverConnectionService,
                            CommentsParserService commentsParserService,
-                           JsonCommentsService jsonCommentsService) {
+                           JsonFileService jsonFileService) {
         this.serverConnectionService = serverConnectionService;
         this.commentsParserService = commentsParserService;
-        this.jsonCommentsService = jsonCommentsService;
+        this.jsonFileService = jsonFileService;
     }
 
     public List<Comment> getAllComments(String kickstarterProjectUrl) throws IOException {
@@ -51,10 +51,15 @@ public class CommentsService {
     public void getAllCommentsToJsonFile(String kickstarterProjectUrl, String jsonFileName) throws IOException, ParseException {
         List<Comment> commentList =
                 getAllComments(kickstarterProjectUrl);
-        jsonCommentsService.writeToFile(commentList, jsonFileName);
+        jsonFileService.writeToFile2(commentList, jsonFileName);
     }
 
-    public List<Comment> getAllCommentsFromJsonFile(String jsonFileName) throws FileNotFoundException, ParseException {
-        return jsonCommentsService.readFromFile(jsonFileName);
+    public List<Comment> getAllCommentsFromJsonFile(String jsonFileName) throws ParseException {
+        try {
+            return jsonFileService.readFromFile2(jsonFileName, Comment.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

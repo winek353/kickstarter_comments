@@ -34,7 +34,7 @@ public class CommentsParserService {
         return result;
     }
 
-    public List<String> getDataBetween(String toParse, String startingPatternQuote, String endingPatternQuote){
+    private List<String> getDataBetween(String toParse, String startingPatternQuote, String endingPatternQuote){
         List<String> texts = new ArrayList<String>();
         Pattern p = Pattern.compile(Pattern.quote(startingPatternQuote) + "(.*?)"
                 + Pattern.quote(endingPatternQuote));
