@@ -18,24 +18,15 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import model.Comment;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import service.CommentsService;
-
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.URL;
-import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 //https://www.kickstarter.com/projects/gonab/tang-garden
 //https://www.kickstarter.com/projects/1620645203/moonpod-a-zero-gravity-beanbag-for-all-day-deep-re
 //https://www.kickstarter.com/projects/antsylabs/fidget-cube-a-vinyl-desk-toy
 //^^30k
 public class Main extends Application {
-    private AnchorPane vbox;
+    private VBox vbox;
     private ScrollPane scrollPane;
     CommentPanes commentPanes;
     private List<AnchorPane> commentsPanesList;
@@ -62,7 +53,7 @@ public class Main extends Application {
     private void asd(Scene scene) {//dac jakas nazwe
         AnchorPane mainPane = (AnchorPane) scene.lookup("#mainPane");
 
-        vbox = (AnchorPane) scene.lookup("#vbox");
+        vbox = (VBox) scene.lookup("#vbox");
         scrollPane = (ScrollPane) scene.lookup("#scrollPane");
         vbox.prefWidthProperty().bind(mainPane.widthProperty());
         scrollPane.prefWidthProperty().bind(mainPane.widthProperty());

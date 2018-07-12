@@ -25,7 +25,7 @@ public class Controller {
     private MenuBar menuBar;
 
     @FXML
-    private AnchorPane vbox;
+    private VBox vbox;
 
 
     public void

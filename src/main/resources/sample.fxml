@@ -43,8 +43,8 @@
 
       <ScrollPane id="scrollPane"  hbarPolicy="NEVER" layoutX="0.0" layoutY="100.0" prefWidth="594.0">
          <content>
-            <AnchorPane fx:id="vbox" id="vbox">
-            </AnchorPane>
+            <VBox fx:id="vbox" id="vbox">
+            </VBox>
          </content>
       </ScrollPane>
       <Label layoutX="231.0" layoutY="56.0" text="Project name" textFill="#3cc6b4">
