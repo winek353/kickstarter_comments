@@ -12,14 +12,7 @@ import java.net.*;
 import java.util.List;
 
 @Service("serverConnectionService")
-public class ServerConnectionService {
-
-    private CommentsParserService commentsParserService;
-
-    @Autowired
-    public ServerConnectionService(CommentsParserService commentsParserService) {
-        this.commentsParserService = commentsParserService;
-    }
+class ServerConnectionService {
 
     StringBuffer getFirstCommentsFromKickstarter(String kickstarterProjectUrl) throws IOException{
         URL url = new URL(kickstarterProjectUrl + "/comments");
@@ -37,13 +30,11 @@ public class ServerConnectionService {
         in.close();
         con.disconnect();
 
-//        System.out.println(content);
         return content;
     }
 
 
     StringBuffer getJsonFromKickstarter(String kickstarterProjectUrl, String cursor) throws IOException{
-//        https://www.kickstarter.com/projects/petersengames/startropolis/comments?cursor=20899652
         URL url = new URL(kickstarterProjectUrl + "/comments?cursor=" + cursor);
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("GET");

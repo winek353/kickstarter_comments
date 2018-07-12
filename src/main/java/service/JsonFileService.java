@@ -15,9 +15,9 @@ import java.util.Collection;
 import java.util.List;
 
 @Service("jsonFileService")
-public class JsonFileService {
+class JsonFileService {
 
-    <T> void writeToFile2( List<T> ListToWrite, String outDirectory) throws ParseException {
+    <T> void writeToFile(List<T> ListToWrite, String outDirectory) throws ParseException {
         try (Writer writer = new FileWriter(new File(outDirectory + ".json") )) {
             Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
             gson.toJson(ListToWrite, writer);
@@ -26,7 +26,7 @@ public class JsonFileService {
         }
     }
 
-    <T> List<T> readFromFile2(String fileName, Class clazz) throws ParseException, IOException {
+    <T> List<T> readFromFile(String fileName, Class clazz) throws ParseException, IOException {
         Gson gson = new Gson();
         Type type;
         type = pickType(clazz);
@@ -36,8 +36,7 @@ public class JsonFileService {
         yourFile.createNewFile(); // if file already exists will do nothing
 
         JsonReader reader = new JsonReader(new FileReader(fileName+ ".json"));
-        List<T> typeList = gson.fromJson(reader, type);
-        return typeList;
+        return gson.fromJson(reader, type);
     }
 
     private Type pickType(Class clazz){

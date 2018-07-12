@@ -26,8 +26,8 @@ public class SpringMain {
 //        comments.forEach(c-> System.out.println(c));
 //        System.out.println(comments.size());
 
-//        commentsService.getAllCommentsToJsonFile(kickstarterProjectUrl, "com");
-        commentsService.updateCommentsInFile(kickstarterProjectUrl, "com");
+        commentsService.getAllCommentsToJsonFile(kickstarterProjectUrl, "com");
+//        commentsService.updateCommentsInFile(kickstarterProjectUrl, "com");
 //        commentsService.getAllCommentsFromJsonFile("com").forEach(c-> System.out.println(c.getId()));
         System.out.println(commentsService.getAllCommentsFromJsonFile("com").size());
 

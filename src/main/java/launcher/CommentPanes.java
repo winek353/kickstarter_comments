@@ -138,11 +138,7 @@ public class CommentPanes {
 
         List<Comment> comments = null;
 
-        try {
-            comments = commentsService.getAllCommentsFromJsonFile(file);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        comments = commentsService.getAllCommentsFromJsonFile(file);
 
         System.out.println("comments.size()");
         System.out.println(comments.size());
@@ -185,11 +181,7 @@ public class CommentPanes {
         System.out.println("comments.size()");
         System.out.println(comments.size());
         System.out.println("comments.size()");
-        try {
-            comments = commentsService.getAllCommentsFromJsonFile(file);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        comments = commentsService.getAllCommentsFromJsonFile(file);
         System.out.println("comments.size()");
         System.out.println(comments.size());
         System.out.println("comments.size()");
