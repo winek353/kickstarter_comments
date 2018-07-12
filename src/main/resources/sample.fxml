@@ -8,13 +8,42 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1">
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.MenuBar?>
+
+
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuItem?>
+<AnchorPane id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="launcher.Controller">
    <children>
-      <TextField id="URL" layoutX="157.0" layoutY="14.0" prefHeight="25.0" prefWidth="188.0" />
-      <Button id="button" layoutX="365.0" layoutY="14.0" mnemonicParsing="false" text="Button" />
-      <ScrollPane id="scrollPane" hbarPolicy="NEVER" layoutX="0.0" layoutY="100.0" prefWidth="594.0">
+      <TextField id="URL" layoutX="180.0" layoutY="24.0" prefHeight="25.0" prefWidth="188.0" />
+      <Button id="button" layoutX="385.0" layoutY="24.0" mnemonicParsing="false" text="Button" />
+
+       <MenuBar fx:id="menuBar" onKeyPressed="#handleKeyInput" >
+           <menus>
+               <Menu text="File">
+                   <items>
+                       <MenuItem text="New"/>
+                       <MenuItem text="Open" onAction="#openURL"/>
+                       <MenuItem text="Save"/>
+                       <MenuItem text="Save As"/>
+                       <SeparatorMenuItem  />
+                       <MenuItem text="Exit" onAction="#exit"/>
+                   </items>
+               </Menu>
+               <Menu text="Settings">
+                   <items>
+                       <MenuItem text="sfsdfsdfsd"/>
+                       <MenuItem text="vsdvsdsdvsd"/>
+                       <MenuItem text="xfdsfsdfsdfsd"/>
+                   </items>
+               </Menu>
+           </menus>
+       </MenuBar>
+
+      <ScrollPane id="scrollPane"  hbarPolicy="NEVER" layoutX="0.0" layoutY="100.0" prefWidth="594.0">
          <content>
-            <VBox id="vbox" prefHeight="400.0">
+            <VBox fx:id="vbox" id="vbox">
             </VBox>
          </content>
       </ScrollPane>
