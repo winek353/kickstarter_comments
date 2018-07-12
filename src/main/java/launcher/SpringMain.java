@@ -22,18 +22,22 @@ public class SpringMain {
                 (ProjectsService) ctx.getBean("projectsService");
 
         String kickstarterProjectUrl = "https://www.kickstarter.com/projects/bdgames/assault-on-doomrock-doompocalypse";
-//        commentsService.getAllCommentsToJsonFile(kickstarterProjectUrl, "com");
 //        List<Comment> comments = commentsService.getAllComments(kickstarterProjectUrl);
 //        comments.forEach(c-> System.out.println(c));
 //        System.out.println(comments.size());
 
-//        commentsService.getAllCommentsFromJsonFile("com").forEach(c-> System.out.println(c));
+//        commentsService.getAllCommentsToJsonFile(kickstarterProjectUrl, "com");
+        commentsService.updateCommentsInFile(kickstarterProjectUrl, "com");
+//        commentsService.getAllCommentsFromJsonFile("com").forEach(c-> System.out.println(c.getId()));
+        System.out.println(commentsService.getAllCommentsFromJsonFile("com").size());
 
-        projectsService.saveProject("startropolis",
-                "https://www.kickstarter.com/projects/petersengames/startropolis");
-        projectsService.saveProject("Assault on Doomrock - Doompocalypse",
-                "https://www.kickstarter.com/projects/bdgames/assault-on-doomrock-doompocalypse");
+
+
+//        projectsService.saveProject("startropolis",
+//                "https://www.kickstarter.com/projects/petersengames/startropolis");
+//        projectsService.saveProject("Assault on Doomrock - Doompocalypse",
+//                "https://www.kickstarter.com/projects/bdgames/assault-on-doomrock-doompocalypse");
 //        projectsService.getProjects().forEach(p-> System.out.println(p));
-        projectsService.deleteProject("startropolis");
+//        projectsService.deleteProject("startropolis");
     }
 }
