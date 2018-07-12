@@ -23,10 +23,10 @@
            <menus>
                <Menu text="File">
                    <items>
-                       <MenuItem text="New"/>
-                       <MenuItem text="Open" onAction="#openURL"/>
-                       <MenuItem text="Save"/>
-                       <MenuItem text="Save As"/>
+                       <MenuItem text="Add new project" onAction="#addNewProject"/>
+                       <MenuItem text="Open project" onAction="#openURL"/>
+                       <MenuItem text="Manage projects" onAction="#manageProjects"/>
+                       <MenuItem text=""/>
                        <SeparatorMenuItem  />
                        <MenuItem text="Exit" onAction="#exit"/>
                    </items>

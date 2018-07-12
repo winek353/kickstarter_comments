@@ -3,22 +3,22 @@ package launcher;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Bounds;
-import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import model.Comment;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import service.CommentsService;
+
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.List;
 
 //https://www.kickstarter.com/projects/gonab/tang-garden
@@ -28,9 +28,8 @@ import java.util.List;
 public class Main extends Application {
     private VBox vbox;
     private ScrollPane scrollPane;
-    CommentPanes commentPanes;
-    private List<AnchorPane> commentsPanesList;
-    List<Comment> comments;
+    CommentPanesManager commentPanesManager;
+
     @Override
     public void start(Stage primaryStage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/sample.fxml"));
@@ -57,19 +56,18 @@ public class Main extends Application {
 
         scrollPane.prefHeightProperty().bind(mainPane.heightProperty().subtract(100));
 
-        commentPanes = new CommentPanes(vbox,scrollPane);
+        commentPanesManager = new CommentPanesManager(vbox, scrollPane);
 
 
-        scrollPane.vvalueProperty().addListener(new ChangeListener<Number>()
-        {
+        scrollPane.vvalueProperty().addListener(new ChangeListener<Number>() {
             @Override
-            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue)
-            {
-                commentPanes.loadVisiblePanes();
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                commentPanesManager.loadVisiblePanes();
 
             }
         });
     }
+
     private void setButtonsActions(Scene scene) {
         Button btn2 = (Button) scene.lookup("#button");
 
@@ -77,9 +75,62 @@ public class Main extends Application {
         btn.setText("Get Comments from url");
         btn.setOnAction((x) -> {
             String url = ((TextField) scene.lookup("#URL")).getText().toString();
-            commentPanes.loadInitialComments(url);
+            // commentPanesManager.loadInitialComments(url);
         });
     }
+
+    public List<Comment> getAllCommentsFromFile(String file) {
+        ApplicationContext ctx = new AnnotationConfigApplicationContext("service");
+        CommentsService commentsService = (CommentsService) ctx.getBean("commentsService");
+
+        List<Comment> comments = null;
+
+
+        comments = commentsService.getAllCommentsFromJsonFile(file);
+
+
+        System.out.println("comments.size()");
+        System.out.println(comments.size());
+        System.out.println("comments.size()");
+        return comments;
+    }
+
+    public List<Comment> getAllCommentsFromUrl(String url) {
+        List<Comment> comments = null;
+        ApplicationContext ctx = new AnnotationConfigApplicationContext("service");
+        CommentsService commentsService =
+                (CommentsService) ctx.getBean("commentsService");
+
+        try {
+            comments = commentsService.getAllComments(url);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.out.println("comments.size()");
+        System.out.println(comments.size());
+        System.out.println("comments.size()");
+        return comments;
+    }
+
+    public List<Comment> getAllCommentsToFile(String url, String file) {
+        ApplicationContext ctx = new AnnotationConfigApplicationContext("service");
+        CommentsService commentsService = (CommentsService) ctx.getBean("commentsService");
+
+        List<Comment> comments = null;
+        try {
+            commentsService.getAllCommentsToJsonFile(url, file);
+        } catch (ParseException | IOException e) {
+            e.printStackTrace();
+        }
+
+
+        comments = commentsService.getAllCommentsFromJsonFile(file);
+        System.out.println("comments.size()");
+        System.out.println(comments.size());
+        System.out.println("comments.size()");
+        return comments;
+    }
+
 
     public static void main(String[] args) {
 

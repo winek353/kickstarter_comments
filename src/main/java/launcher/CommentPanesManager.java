@@ -17,25 +17,20 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CommentPanes {
+public class CommentPanesManager {
     private VBox parent;
     private ScrollPane scrollPane;
     private List<AnchorPane> commentsPanesList;
-    List<Comment> comments;
-    int maxDiplayedCommentsCount = 20;
+    private List<Comment> comments;
+    private int maxDiplayedCommentsCount = 200;
+    private int currentMaxDiplayedCommentsCount = 0;
     int firstDisplayedCommentIndex = 0;
-    int lastDisplayedCommentIndex = maxDiplayedCommentsCount;
+    private int lastDisplayedCommentIndex = 0;
 
-    private void setAllCommentsPosition() {
-//        for(int i=1;i<100;i++){
-//            commentsPanesList.get(i).setLayoutY(commentsPanesList.get(i-1).getBoundsInParent().getMinY()+commentsPanesList.get(i-1).getHeight());
-//        }
-    }
-
-    CommentPanes(VBox parent, ScrollPane scrollPane) {
+    CommentPanesManager(VBox parent, ScrollPane scrollPane) {
         this.parent = parent;
         this.scrollPane = scrollPane;
-        commentsPanesList = new ArrayList<>();
+        // commentsPanesList = new ArrayList<>();
     }
 
     public void setParentPane(VBox parent) {
@@ -65,10 +60,9 @@ public class CommentPanes {
     }
 
     private void removeBottomPanes() {
-        commentsPanesList.remove(maxDiplayedCommentsCount - 1);
-        parent.getChildren().remove(maxDiplayedCommentsCount - 1);
+        commentsPanesList.remove(currentMaxDiplayedCommentsCount - 1);
+        parent.getChildren().remove(currentMaxDiplayedCommentsCount - 1);
     }
-
 
     private boolean shouldAddPanesOnBottom() {
         double maxSize = parent.getHeight();
@@ -81,7 +75,7 @@ public class CommentPanes {
 
     private boolean shouldAddPanesOnTop() {
         double scrollBarPosition = scrollPane.getVvalue();
-        if (scrollBarPosition < 20 / scrollPane.getHeight() && lastDisplayedCommentIndex > maxDiplayedCommentsCount) {
+        if (scrollBarPosition < 20 / scrollPane.getHeight() && lastDisplayedCommentIndex > currentMaxDiplayedCommentsCount) {
             return true;
         }
         return false;
@@ -92,7 +86,7 @@ public class CommentPanes {
     }
 
     private void addPanesOnTop() {
-        AnchorPane a = createCommentToDisplay(comments.get(lastDisplayedCommentIndex - maxDiplayedCommentsCount - 1));
+        AnchorPane a = createCommentToDisplay(comments.get(lastDisplayedCommentIndex - currentMaxDiplayedCommentsCount - 1));
         commentsPanesList.add(0, a);
         parent.getChildren().add(0, a);
         a.applyCss();
@@ -101,30 +95,35 @@ public class CommentPanes {
     }
 
     public void loadVisiblePanes() {
+        if (commentsPanesList == null) {
+            loadInitialComments();
+        }
         if (shouldAddPanesOnBottom()) {
             addPanesOnBottom();
             removeTopPanes();
             parent.applyCss();
             parent.layout();
-            scrollPane.setVvalue(scrollPane.getVvalue() - 50 / parent.getHeight());
+            scrollPane.setVvalue(scrollPane.getVvalue() - 30 / parent.getHeight());
         }
         if (shouldAddPanesOnTop()) {
             addPanesOnTop();
             removeBottomPanes();
             parent.applyCss();
             parent.layout();
-            scrollPane.setVvalue(scrollPane.getVvalue() + 50 / parent.getHeight());
+            scrollPane.setVvalue(scrollPane.getVvalue() + 30 / parent.getHeight());
 //            scrollPane.setVvalue(commentsPanesList.get(1).getLayoutY() / parent.getHeight());
         }
     }
 
-    public void loadInitialComments(String url) {
+    public void loadInitialComments() {
         commentsPanesList = new ArrayList<>();
-        comments = getAllComments(url);
-        parent.getChildren().removeAll();
+        currentMaxDiplayedCommentsCount = Math.min(comments.size(), maxDiplayedCommentsCount);
+        lastDisplayedCommentIndex = currentMaxDiplayedCommentsCount;
+        // comments = getAllComments(url);
+        //   parent.getChildren().removeAll();
 
         addCommentPaneToList(comments.get(0), 0);
-        for (int i = 1; i < maxDiplayedCommentsCount && i < comments.size(); i++) {
+        for (int i = 1; i < currentMaxDiplayedCommentsCount && i < comments.size(); i++) {
             AnchorPane commentPane = commentsPanesList.get(i - 1);
             commentPane.applyCss();
             commentPane.layout();
@@ -132,68 +131,17 @@ public class CommentPanes {
         }
     }
 
-    private List<Comment> getAllCommentsFromFile(String file) {
-        ApplicationContext ctx = new AnnotationConfigApplicationContext("service");
-        CommentsService commentsService = (CommentsService) ctx.getBean("commentsService");
-
-        List<Comment> comments = null;
-
-        comments = commentsService.getAllCommentsFromJsonFile(file);
-
-        System.out.println("comments.size()");
-        System.out.println(comments.size());
-        System.out.println("comments.size()");
-        return comments;
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
     }
 
 
-    private List<Comment> getAllCommentsFromUrl(String url) {
-        List<Comment> comments = null;
-        ApplicationContext ctx = new AnnotationConfigApplicationContext("service");
-        CommentsService commentsService =
-                (CommentsService) ctx.getBean("commentsService");
-
-        try {
-            comments = commentsService.getAllComments(url);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        System.out.println("comments.size()");
-        System.out.println(comments.size());
-        System.out.println("comments.size()");
-        return comments;
-    }
-
-    private List<Comment> getAllCommentsToFile(String url, String file) {
-        ApplicationContext ctx = new AnnotationConfigApplicationContext("service");
-        CommentsService commentsService = (CommentsService) ctx.getBean("commentsService");
-
-        List<Comment> comments = null;
-        try {
-            commentsService.getAllCommentsToJsonFile(url, file);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        System.out.println("comments.size()");
-        System.out.println(comments.size());
-        System.out.println("comments.size()");
-        comments = commentsService.getAllCommentsFromJsonFile(file);
-        System.out.println("comments.size()");
-        System.out.println(comments.size());
-        System.out.println("comments.size()");
-        return comments;
-    }
-
-    private List<Comment> getAllComments(String url) {
-        if (url.isEmpty())
-            return getAllCommentsFromFile("comments");
-        else return getAllCommentsFromUrl(url);
-
-    }
+//    private List<Comment> getAllComments(String url) {
+//        if (url.isEmpty())
+//            return getAllCommentsFromFile("comments");
+//        else return getAllCommentsFromUrl(url);
+//
+//    }
 
     private void addCommentPaneToList(Comment comment, double posY) {
         AnchorPane a = createCommentToDisplay(comment);
@@ -237,7 +185,7 @@ public class CommentPanes {
         label.setLayoutX(200);
         label.setLayoutY(28);
         label.setPrefHeight(15);
-        label.setPrefWidth(120);
+        label.setPrefWidth(170);
         return label;
     }
 
