@@ -31,9 +31,6 @@ public class Main extends Application {
     CommentPanes commentPanes;
     private List<AnchorPane> commentsPanesList;
     List<Comment> comments;
-    int maxDiplayedCommentsCount = 150;
-    int firstDisplayedCommentIndex = 0;
-    int lastDisplayedCommentIndex = maxDiplayedCommentsCount;
     @Override
     public void start(Stage primaryStage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/sample.fxml"));
