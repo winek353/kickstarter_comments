@@ -55,7 +55,6 @@ public class CommentPanesManager {
     }
 
     private boolean shouldAddPanesOnBottom() {
-        double maxSize = parent.getHeight();
         double scrollBarPosition = scrollPane.getVvalue();
         if (scrollBarPosition > 1. - 20 / scrollPane.getHeight() && comments.size() != lastDisplayedCommentIndex) {
             return true;
@@ -87,22 +86,15 @@ public class CommentPanesManager {
         parent.applyCss();
         parent.layout();
     }
+
     public void loadVisiblePanes() {
 
         if (commentsPanesList == null) {
             loadInitialComments();
         }
         if (shouldAddPanesOnBottom()) {
-            System.out.println(parent.getHeight());
             addPanesOnBottom();
-            parent.applyCss();
-            parent.layout();
-            System.out.println(parent.getHeight());
             removeTopPanes();
-            parent.applyCss();
-            parent.layout();
-            System.out.println(parent.getHeight());
-            System.out.println();
             scrollPane.setVvalue(scrollPane.getVvalue() - 20 / parent.getHeight());//poprawić
         }
         if (shouldAddPanesOnTop()) {

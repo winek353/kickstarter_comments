@@ -19,6 +19,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import service.CommentsService;
 import service.ProjectsService;
+
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -62,7 +63,7 @@ public class Controller {
             btn.setText("Get Comments from url");
             btn.setOnAction((x) -> {
                 String url = ((TextField) scene.lookup("#inputURL")).getText().toString();
-               // main.commentPanesManager.loadInitialComments(url);;
+                // main.commentPanesManager.loadInitialComments(url);;
                 stage.close();
             });
 
@@ -74,7 +75,6 @@ public class Controller {
     @FXML
     private void addNewProject() {
         try {
-
             FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(getClass().getResource("/addNewProjectWindow.fxml"));
 
@@ -131,11 +131,11 @@ public class Controller {
             List<Project> projectsList = projectsService.getProjects();
 
             List<Boolean> selectedProjects = new ArrayList<Boolean>();
-            while(selectedProjects.size() < projectsList.size()) selectedProjects.add(false);
+            while (selectedProjects.size() < projectsList.size()) selectedProjects.add(false);
             addProjectsToVBox(projectsList, selectedProjects, vbox, stage);
             Button updateAllButton = ((Button) scene.lookup("#updateAllButton"));
-            updateAllButton.setOnMouseClicked(a->{
-                projectsList.forEach(x-> {
+            updateAllButton.setOnMouseClicked(a -> {
+                projectsList.forEach(x -> {
                     try {
                         commentsService.updateCommentsInFile(x.getUrl(), x.getName());
                     } catch (IOException | ParseException e) {
@@ -145,9 +145,9 @@ public class Controller {
             });
 
             Button updateSelectedButton = ((Button) scene.lookup("#updateSelectedButton"));
-            updateSelectedButton.setOnMouseClicked(a->{
-                for(int i=0;i<projectsList.size();i++){
-                    if(selectedProjects.get(i)){
+            updateSelectedButton.setOnMouseClicked(a -> {
+                for (int i = 0; i < projectsList.size(); i++) {
+                    if (selectedProjects.get(i)) {
                         try {
                             commentsService.updateCommentsInFile(projectsList.get(i).getUrl(), projectsList.get(i).getName());
                         } catch (IOException | ParseException e) {
@@ -157,9 +157,9 @@ public class Controller {
                 }
             });
             Button deleteSelectedButton = ((Button) scene.lookup("#deleteSelectedButton"));
-            deleteSelectedButton.setOnMouseClicked(a->{
-                for(int i=projectsList.size()-1;i>=0;i--){
-                    if(selectedProjects.get(i)){
+            deleteSelectedButton.setOnMouseClicked(a -> {
+                for (int i = projectsList.size() - 1; i >= 0; i--) {
+                    if (selectedProjects.get(i)) {
                         projectsService.deleteProject(projectsList.get(i).getName());
                         vbox.getChildren().remove(i);
                         projectsList.remove(i);
@@ -168,7 +168,7 @@ public class Controller {
                 }
             });
             Button addButton = ((Button) scene.lookup("#addButton"));
-            addButton.setOnMouseClicked(a->{
+            addButton.setOnMouseClicked(a -> {
                 addNewProject();
             });
 
@@ -179,26 +179,24 @@ public class Controller {
     }
 
 
-    private void addProjectsToVBox(List<Project> projectsList, List<Boolean> selectedProjects, VBox vBox, Stage stage){
-        if(projectsList == null) return;
+    private void addProjectsToVBox(List<Project> projectsList, List<Boolean> selectedProjects, VBox vBox, Stage stage) {
+        if (projectsList == null) return;
 
         projectsList.forEach(x -> {
             AnchorPane projectPane = createProjectPane(x.getName(), x.getUrl());
             vBox.getChildren().add(projectPane);
-            projectPane.setOnMouseClicked(e->{
+            projectPane.setOnMouseClicked(e -> {
                 if (e.getClickCount() == 2) {
                     List<Comment> comments = main.getAllCommentsFromFile(x.getName());
                     main.commentPanesManager.setComments(comments);
                     main.commentPanesManager.loadInitialComments();
                     stage.close();
-                }
-                else{
+                } else {
                     int i = projectsList.indexOf(x);
-                    if(!selectedProjects.get(i)) {
+                    if (!selectedProjects.get(i)) {
                         projectPane.setBackground(new Background(new BackgroundFill(Color.web("#999999"), CornerRadii.EMPTY, Insets.EMPTY)));
                         selectedProjects.set(i, true);
-                    }
-                     else {
+                    } else {
                         projectPane.setBackground(Background.EMPTY);
                         selectedProjects.set(i, false);
                     }
@@ -207,7 +205,7 @@ public class Controller {
         });
     }
 
-    public AnchorPane createProjectPane(String name, String url){
+    public AnchorPane createProjectPane(String name, String url) {
         AnchorPane anchorPane = new AnchorPane();
         Label label = new Label();
         label.setStyle("-fx-font-weight: bold");
