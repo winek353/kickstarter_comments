@@ -2,55 +2,50 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<?import javafx.scene.control.SeparatorMenuItem?>
-<?import javafx.scene.control.MenuBar?>
-
-
-<?import javafx.scene.control.Menu?>
-<?import javafx.scene.control.MenuItem?>
 <AnchorPane id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="launcher.Controller">
    <children>
-      <TextField id="URL" layoutX="180.0" layoutY="24.0" prefHeight="25.0" prefWidth="188.0" />
-      <Button id="button" layoutX="385.0" layoutY="24.0" mnemonicParsing="false" text="Button" />
 
-       <MenuBar fx:id="menuBar" onKeyPressed="#handleKeyInput" >
+       <MenuBar fx:id="menuBar">
            <menus>
                <Menu text="File">
                    <items>
-                       <MenuItem text="Add new project" onAction="#addNewProject"/>
-                       <MenuItem text="Open project" onAction="#openURL"/>
-                       <MenuItem text="Manage projects" onAction="#manageProjects"/>
-                       <MenuItem text=""/>
-                       <SeparatorMenuItem  />
-                       <MenuItem text="Exit" onAction="#exit"/>
+                       <MenuItem onAction="#addNewProject" text="Add new project" />
+                       <MenuItem onAction="#openURL" text="Open new project" />
+                       <MenuItem onAction="#Projects" text="Projects" />
+                       <SeparatorMenuItem />
+                       <MenuItem onAction="#exit" text="Exit" />
                    </items>
                </Menu>
                <Menu text="Settings">
                    <items>
-                       <MenuItem text="sfsdfsdfsd"/>
-                       <MenuItem text="vsdvsdsdvsd"/>
-                       <MenuItem text="xfdsfsdfsdfsd"/>
+                       <MenuItem text="sfsdfsdfsd" />
                    </items>
                </Menu>
            </menus>
        </MenuBar>
 
-      <ScrollPane id="scrollPane"  hbarPolicy="NEVER" layoutX="0.0" layoutY="100.0" prefWidth="594.0">
+      <ScrollPane id="scrollPane" hbarPolicy="NEVER" layoutY="56.0" prefHeight="348.0" prefWidth="600.0">
          <content>
-            <VBox fx:id="vbox" id="vbox">
+            <VBox id="vbox" fx:id="vbox">
             </VBox>
          </content>
       </ScrollPane>
-      <Label layoutX="231.0" layoutY="56.0" text="Project name" textFill="#3cc6b4">
+      <Label id="projectName" layoutX="221.0" layoutY="25.0" text="Project name" textFill="#3cc6b4">
          <font>
             <Font name="Calibri Bold Italic" size="24.0" />
          </font>
       </Label>
+      <Button id="button2" layoutX="454.0" layoutY="14.0" mnemonicParsing="false" text="go to" />
+      <TextField id="text" layoutX="505.0" layoutY="14.0" prefHeight="25.0" prefWidth="81.0" />
    </children>
 </AnchorPane>

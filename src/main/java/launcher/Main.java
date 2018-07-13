@@ -35,18 +35,18 @@ public class Main extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/sample.fxml"));
         Parent root = fxmlLoader.load();
         primaryStage.setTitle("Kickstarter comments");
-        primaryStage.setScene(new Scene(root, 666, 605));
+        primaryStage.setScene(new Scene(root, 600, 600));
         primaryStage.show();
         Controller controller = (Controller) fxmlLoader.getController();
         controller.setMain(this);
         Scene scene = primaryStage.getScene();
         setButtonsActions(scene);
-        asd(scene);
+        initialize(scene);
         primaryStage.show();
 
     }
 
-    private void asd(Scene scene) {//dac jakas nazwe
+    private void initialize(Scene scene) {
         AnchorPane mainPane = (AnchorPane) scene.lookup("#mainPane");
 
         vbox = (VBox) scene.lookup("#vbox");
@@ -58,24 +58,21 @@ public class Main extends Application {
 
         commentPanesManager = new CommentPanesManager(vbox, scrollPane);
 
-
+        makeTextNumericOnly((TextField) scene.lookup("#text"));
         scrollPane.vvalueProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
                 commentPanesManager.loadVisiblePanes();
-
             }
         });
     }
 
     private void setButtonsActions(Scene scene) {
-        Button btn2 = (Button) scene.lookup("#button");
-
-        Button btn = (Button) scene.lookup("#button");
-        btn.setText("Get Comments from url");
-        btn.setOnAction((x) -> {
-            String url = ((TextField) scene.lookup("#URL")).getText().toString();
-            // commentPanesManager.loadInitialComments(url);
+        Button btn2 = (Button) scene.lookup("#button2");
+        btn2.setOnAction((e) -> {
+            String text = ((TextField) scene.lookup("#text")).getText().toString();
+            int pos = Integer.parseInt(text);
+            commentPanesManager.loadInitialComments(pos);
         });
     }
 
@@ -85,13 +82,10 @@ public class Main extends Application {
 
         List<Comment> comments = null;
 
-
         comments = commentsService.getAllCommentsFromJsonFile(file);
 
-
-        System.out.println("comments.size()");
+        System.out.println("comments size");
         System.out.println(comments.size());
-        System.out.println("comments.size()");
         return comments;
     }
 
@@ -135,5 +129,17 @@ public class Main extends Application {
     public static void main(String[] args) {
 
         launch(args);
+    }
+
+    private void makeTextNumericOnly(TextField textField) {
+        textField.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue,
+                                String newValue) {
+                if (!newValue.matches("\\d*")) {
+                    textField.setText(newValue.replaceAll("[^\\d]", ""));
+                }
+            }
+        });
     }
 }
