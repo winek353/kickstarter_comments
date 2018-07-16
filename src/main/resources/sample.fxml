@@ -20,7 +20,7 @@
                <Menu text="File">
                    <items>
                        <MenuItem onAction="#addNewProject" text="Add new project" />
-                       <MenuItem onAction="#openURL" text="Open new project" />
+                       <MenuItem onAction="#openProjectFromURL" text="Open new project" />
                        <MenuItem onAction="#Projects" text="Projects" />
                        <SeparatorMenuItem />
                        <MenuItem onAction="#exit" text="Exit" />

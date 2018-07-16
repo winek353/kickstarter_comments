@@ -32,6 +32,7 @@ public class CommentPanesManager {
         this.scrollPane = scrollPane;
     }
 
+
     public void setParentPane(VBox parent) {
         this.parent = parent;
     }
