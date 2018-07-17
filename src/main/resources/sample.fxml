@@ -20,7 +20,7 @@
                <Menu text="File">
                    <items>
                        <MenuItem onAction="#addNewProject" text="Add new project" />
-                       <MenuItem onAction="#openProjectFromURL" text="Open new project" />
+                       <!--<MenuItem onAction="#openProjectFromURL" text="Open new project" />-->
                        <MenuItem onAction="#Projects" text="Projects" />
                        <SeparatorMenuItem />
                        <MenuItem onAction="#exit" text="Exit" />
@@ -28,19 +28,19 @@
                </Menu>
                <Menu text="Settings">
                    <items>
-                       <MenuItem text="sfsdfsdfsd" />
+                       <MenuItem text="to do" />
                    </items>
                </Menu>
            </menus>
        </MenuBar>
 
-      <ScrollPane id="scrollPane" hbarPolicy="NEVER" layoutY="56.0" prefHeight="348.0" prefWidth="600.0">
+      <ScrollPane id="scrollPane" hbarPolicy="NEVER" layoutY="66.0" prefHeight="348.0" prefWidth="600.0">
          <content>
             <VBox id="vbox" fx:id="vbox">
             </VBox>
          </content>
       </ScrollPane>
-      <Label id="projectName" layoutX="221.0" layoutY="25.0" text="Project name" textFill="#3cc6b4">
+      <Label id="projectName" layoutX="120.0" layoutY="35.0" text="Kickstarter comment downloader" textFill="#3cc6b4">
          <font>
             <Font name="Calibri Bold Italic" size="24.0" />
          </font>

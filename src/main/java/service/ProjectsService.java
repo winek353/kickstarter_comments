@@ -20,6 +20,10 @@ public class ProjectsService {
         this.jsonFileService = jsonFileService;
     }
 
+    public String fixUrl(String url){
+        return url.replaceAll("/comments", "");
+    }
+
     public void saveProject(String name, String url){
         Project project = new Project(name, url);
         try {
@@ -51,16 +55,16 @@ public class ProjectsService {
         }
     }
 
-//    private Project findByName(String name){
-//        try {
-//            List<Project> projects = jsonFileService.readFromFile(FILE_NAME, Project.class);
-//            return projects.stream()
-//                    .filter(project -> project.getName().equals(name))
-//                    .findFirst()
-//                    .get();
-//        } catch (ParseException | IOException e) {
-//            e.printStackTrace();
-//        }
-//        return null;
-//    }
+    private Project findByName(String name){
+        try {
+            List<Project> projects = jsonFileService.readFromFile(FILE_NAME, Project.class);
+            return projects.stream()
+                    .filter(project -> project.getName().equals(name))
+                    .findFirst()
+                    .get();
+        } catch (ParseException | IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

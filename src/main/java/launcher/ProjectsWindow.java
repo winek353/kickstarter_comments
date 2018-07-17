@@ -1,5 +1,6 @@
 package launcher;
 
+import FrontService.ErrorDisplayer;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.scene.Parent;
@@ -16,12 +17,16 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import service.CommentsService;
 import service.ProjectsService;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.UnknownHostException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ProjectsWindow {
+    private ErrorDisplayer errorDisplayer = new ErrorDisplayer();
+
     VBox vBox;
     Scene scene;
     Stage stage;
@@ -82,7 +87,11 @@ public class ProjectsWindow {
             projectsList.forEach(x -> {
                 try {
                     commentsService.updateCommentsInFile(x.getUrl(), x.getName());
-                } catch (IOException | ParseException e) {
+                } catch (UnknownHostException e){
+                    errorDisplayer.display("Cannot connect to " + e.getMessage());
+                }catch (FileNotFoundException e){
+                    errorDisplayer.display("Cannot download comments from page: " + e.getMessage());
+                }catch (IOException | ParseException e) {
                     e.printStackTrace();
                 }
             });
@@ -94,7 +103,11 @@ public class ProjectsWindow {
                 if (selectedProjects.get(i)) {
                     try {
                         commentsService.updateCommentsInFile(projectsList.get(i).getUrl(), projectsList.get(i).getName());
-                    } catch (IOException | ParseException e) {
+                    } catch (UnknownHostException e){
+                        errorDisplayer.display("Cannot connect to " + e.getMessage());
+                    }catch (FileNotFoundException e){
+                        errorDisplayer.display("Cannot download comments from page: " + e.getMessage());
+                    }catch (IOException | ParseException e) {
                         e.printStackTrace();
                     }
                 }

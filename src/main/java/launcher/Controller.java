@@ -54,7 +54,7 @@ public class Controller {
 
             Parent root2 = (Parent) fxmlLoader.load();
             Stage stage = new Stage();
-            stage.setTitle("dsfsdfsdfsd");
+            stage.setTitle("Open new project");
             stage.setScene(new Scene(root2));
             stage.show();
             Scene scene = stage.getScene();
