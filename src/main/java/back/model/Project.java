@@ -1,4 +1,4 @@
-package model;
+package back.model;
 
 public class Project {
     private String name;

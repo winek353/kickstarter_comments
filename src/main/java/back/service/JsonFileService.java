@@ -1,17 +1,16 @@
-package service;
+package back.service;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
-import model.Comment;
-import model.Project;
+import back.model.Comment;
+import back.model.Project;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.lang.reflect.Type;
 import java.text.ParseException;
-import java.util.Collection;
 import java.util.List;
 
 @Service("jsonFileService")
@@ -40,7 +39,7 @@ class JsonFileService {
     }
 
     private Type pickType(Class clazz){
-        if(clazz.getName().equals("model.Project"))
+        if(clazz.getName().equals("back.model.Project"))
             return PROJECT_TYPE;
         else
             return COMMENT_TYPE;

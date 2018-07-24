@@ -8,8 +8,8 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import service.CommentsService;
-import service.ProjectsService;
+import back.service.CommentsService;
+import back.service.ProjectsService;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -32,7 +32,7 @@ public class AddNewProjectController {
     void addProjectClicked(ActionEvent event) {
         String url = inputUrl.getText();
         String name = inputName.getText();
-        ApplicationContext ctx = new AnnotationConfigApplicationContext("service");
+        ApplicationContext ctx = new AnnotationConfigApplicationContext("back/service");
         ProjectsService projectsService = (ProjectsService) ctx.getBean("projectsService");
         CommentsService commentsService = (CommentsService) ctx.getBean("commentsService");
         url = projectsService.fixUrl(url);

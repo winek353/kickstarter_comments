@@ -7,7 +7,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import model.Comment;
+import back.model.Comment;
 
 import java.util.ArrayList;
 import java.util.List;

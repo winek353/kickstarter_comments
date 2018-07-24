@@ -1,15 +1,11 @@
-package service;
+package back.service;
 
-import model.Comment;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import service.CommentsParserService;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.*;
-import java.util.List;
 
 @Service("serverConnectionService")
 class ServerConnectionService {

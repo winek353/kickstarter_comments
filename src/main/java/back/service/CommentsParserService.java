@@ -1,6 +1,6 @@
-package service;
+package back.service;
 
-import model.Comment;
+import back.model.Comment;
 import org.jsoup.Jsoup;
 import org.springframework.stereotype.Service;
 
@@ -11,7 +11,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Service("commentsParserService")
-public class CommentsParserService {
+class CommentsParserService {
     private static List<String> allBadges = Arrays.asList("Creator", "Collaborator", "Superbacker", "20-time creator");
 
     private List<String> extractComments(String toParse, String startingPatternQuote, String endingPatternQuote){

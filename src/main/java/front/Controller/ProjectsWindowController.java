@@ -8,12 +8,12 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import model.Comment;
-import model.Project;
+import back.model.Comment;
+import back.model.Project;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import service.CommentsService;
-import service.ProjectsService;
+import back.service.CommentsService;
+import back.service.ProjectsService;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -40,7 +40,7 @@ public class ProjectsWindowController {
 
     @FXML
     private void initialize() {
-        ApplicationContext ctx = new AnnotationConfigApplicationContext("service");
+        ApplicationContext ctx = new AnnotationConfigApplicationContext("back/service");
         projectsService = (ProjectsService) ctx.getBean("projectsService");
         commentsService = (CommentsService) ctx.getBean("commentsService");
 
@@ -146,7 +146,7 @@ public class ProjectsWindowController {
         return anchorPane;
     }
 
-    private void setMainWindowController(MainWindowController mainWindowController) {
+    void setMainWindowController(MainWindowController mainWindowController) {
         this.mainWindowController = mainWindowController;
     }
 }

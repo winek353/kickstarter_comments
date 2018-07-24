@@ -1,9 +1,9 @@
-package back.launcher;
+package back;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import service.CommentsService;
-import service.ProjectsService;
+import back.service.CommentsService;
+import back.service.ProjectsService;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -11,7 +11,7 @@ import java.text.ParseException;
 public class SpringMain {
 
     public static void main(String[] args) throws IOException, ParseException {
-        ApplicationContext ctx = new AnnotationConfigApplicationContext("service");
+        ApplicationContext ctx = new AnnotationConfigApplicationContext("back/service");
         CommentsService commentsService =
                 (CommentsService) ctx.getBean("commentsService");
         ProjectsService projectsService =

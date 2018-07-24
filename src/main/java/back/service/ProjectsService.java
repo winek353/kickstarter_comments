@@ -1,6 +1,6 @@
-package service;
+package back.service;
 
-import model.Project;
+import back.model.Project;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

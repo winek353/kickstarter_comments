@@ -9,7 +9,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import model.Comment;
+import back.model.Comment;
 
 import java.io.IOException;
 import java.util.List;
