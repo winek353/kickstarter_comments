@@ -1,17 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.*?>
 <?import javafx.scene.layout.AnchorPane?>
-
-<AnchorPane prefHeight="155.0" prefWidth="250.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="launcher.Controller">
+<AnchorPane prefHeight="155.0" prefWidth="250.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="front.Controller.AddNewProjectController">
     <children>
-        <TextField id="inputURL" layoutX="50.0" layoutY="14.0" prefHeight="25.0" prefWidth="189.0">
+        <TextField id="inputURL" fx:id="inputUrl" layoutX="50.0" layoutY="14.0" prefHeight="25.0" prefWidth="189.0">
         </TextField>
-        <TextField id="projectNameInput" layoutX="50.0" layoutY="49.0" prefHeight="25.0" prefWidth="189.0">
+        <TextField id="projectNameInput" fx:id="inputName" layoutX="50.0" layoutY="49.0" prefHeight="25.0" prefWidth="189.0">
         </TextField>
-        <Button id="addProjectButton" layoutX="113.0" layoutY="118.0" text="add project from url">
+        <Button id="addProjectButton" fx:id="addProjectButton" layoutX="113.0" layoutY="118.0" onAction="#addProjectClicked" text="add project">
 
         </Button>
       <Label layoutX="14.0" layoutY="18.0" text="URL" />

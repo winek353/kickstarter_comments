@@ -1,4 +1,4 @@
-package launcher;
+package front.service;
 
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -8,17 +8,11 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import model.Comment;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import service.CommentsService;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CommentPanesManager {
+public class CommentDisplayerService {
     private VBox parent;
     private ScrollPane scrollPane;
     private List<AnchorPane> commentsPanesList;
@@ -27,22 +21,9 @@ public class CommentPanesManager {
     private int currentMaxDiplayedCommentsCount = 0;
     private int lastDisplayedCommentIndex = 0;
 
-    CommentPanesManager(VBox parent, ScrollPane scrollPane) {
+    public CommentDisplayerService(VBox parent, ScrollPane scrollPane) {
         this.parent = parent;
         this.scrollPane = scrollPane;
-    }
-
-
-    public void setParentPane(VBox parent) {
-        this.parent = parent;
-    }
-
-    public void setScrollPane(ScrollPane scrollPane) {
-        this.scrollPane = scrollPane;
-    }
-
-    public List<AnchorPane> getCommentsPanesList() {
-        return commentsPanesList;
     }
 
     private void removeTopPanes() {

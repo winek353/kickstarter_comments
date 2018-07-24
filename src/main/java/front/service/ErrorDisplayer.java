@@ -1,4 +1,4 @@
-package FrontService;
+package front.service;
 
 import javafx.scene.control.Alert;
 import org.springframework.stereotype.Service;

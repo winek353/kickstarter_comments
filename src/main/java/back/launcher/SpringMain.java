@@ -1,16 +1,12 @@
-package launcher;
+package back.launcher;
 
-import model.Comment;
-import model.Project;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import service.CommentsParserService;
 import service.CommentsService;
 import service.ProjectsService;
 
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.List;
 
 public class SpringMain {
 
