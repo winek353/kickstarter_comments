@@ -1,6 +1,7 @@
 package back.service;
 
 import back.model.Comment;
+import back.model.Project;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,14 +18,28 @@ public class CommentsService {
 
     private JsonFileService jsonFileService;
 
+    private ProjectsService projectsService;
+
+
+
     @Autowired
     public CommentsService(ServerConnectionService serverConnectionService,
                            CommentsParserService commentsParserService,
-                           JsonFileService jsonFileService) {
+                           JsonFileService jsonFileService,
+                           ProjectsService projectsService) {
         this.serverConnectionService = serverConnectionService;
         this.commentsParserService = commentsParserService;
         this.jsonFileService = jsonFileService;
+        this.projectsService = projectsService;
     }
+
+//    public CommentsService(ServerConnectionService serverConnectionService,
+//                           CommentsParserService commentsParserService,
+//                           JsonFileService jsonFileService ) {
+//        this.serverConnectionService = serverConnectionService;
+//        this.commentsParserService = commentsParserService;
+//        this.jsonFileService = jsonFileService;
+//    }
 
     public List<Comment> getAllComments(String kickstarterProjectUrl) throws IOException {
         String toParse = serverConnectionService.getFirstCommentsFromKickstarter(kickstarterProjectUrl).toString();
@@ -86,5 +101,33 @@ public class CommentsService {
         }
         else
             getAllCommentsToJsonFile(kickstarterProjectUrl, filename);
+    }
+
+    public void updateCommentsInFile(Project project) throws IOException, ParseException {
+        String filename = project.getName();
+        List<Comment> commentList = getAllCommentsFromJsonFile(filename);
+
+        if(commentList != null && !commentList.isEmpty() ){
+            Long newestCursorFromFile = commentList.get(0).getId();
+
+            String toParse = serverConnectionService.getFirstCommentsFromKickstarter(project.getUrl()).toString();
+
+            String cursor = commentsParserService.getCursorFromHtml(toParse);
+
+            List<Comment> newCommentList = getComments(project.getUrl(), cursor, newestCursorFromFile);
+
+            newCommentList.removeIf(comment -> comment.getId().compareTo(newestCursorFromFile)<=0);
+
+            if(!newCommentList.isEmpty()){
+                project.setFirstUpdatedCommentId(newCommentList.get(newCommentList.size()-1).getId());
+                System.out.println(project.getFirstUpdatedCommentId());
+                projectsService.updateProject(project);
+            }
+
+            newCommentList.addAll(commentList);
+            jsonFileService.writeToFile(newCommentList, filename);
+        }
+        else
+            getAllCommentsToJsonFile(project.getUrl(), filename);
     }
 }

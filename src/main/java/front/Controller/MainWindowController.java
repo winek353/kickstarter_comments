@@ -1,5 +1,6 @@
 package front.Controller;
 
+import back.model.Project;
 import front.service.CommentDisplayerService;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -67,8 +68,9 @@ public class MainWindowController {
         }
     }
 
-    void displayComments(List<Comment> comments){
+    void displayComments(List<Comment> comments, Project project){
         commentDisplayerService.setComments(comments);
+        commentDisplayerService.setProject(project);
         commentDisplayerService.loadVisiblePanes();
     }
 

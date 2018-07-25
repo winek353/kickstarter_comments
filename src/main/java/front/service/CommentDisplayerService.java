@@ -1,5 +1,6 @@
 package front.service;
 
+import back.model.Project;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -16,6 +17,7 @@ public class CommentDisplayerService {
     private VBox parent;
     private ScrollPane scrollPane;
     private List<AnchorPane> commentsPanesList;
+    private Project project;
     private List<Comment> comments;
     private int maxDiplayedCommentsCount = 200;
     private int currentMaxDiplayedCommentsCount = 0;
@@ -59,7 +61,8 @@ public class CommentDisplayerService {
     }
 
     private void addPanesOnTop() {
-        AnchorPane a = createCommentToDisplay(comments.get(lastDisplayedCommentIndex - currentMaxDiplayedCommentsCount - 1));
+        Comment comment = comments.get(lastDisplayedCommentIndex - currentMaxDiplayedCommentsCount - 1);
+        AnchorPane a = createCommentToDisplay(comment);
         commentsPanesList.add(0, a);
         parent.getChildren().add(0, a);
         a.applyCss();
@@ -86,25 +89,7 @@ public class CommentDisplayerService {
         }
     }
 
-    public void loadInitialComments(int pos) {
-        if (pos > 0)
-            pos--;
-        parent.getChildren().clear();
-        if (maxDiplayedCommentsCount >= comments.size()) {
-            loadInitialComments();
-            scrollPane.setVvalue(((double) pos) / comments.size());//poprawic
-            return;
-        }
-        commentsPanesList = new ArrayList<>();
-        currentMaxDiplayedCommentsCount = Math.min(comments.size(), maxDiplayedCommentsCount);
-        lastDisplayedCommentIndex = pos + currentMaxDiplayedCommentsCount;
-        for (int i = pos; i < currentMaxDiplayedCommentsCount + pos && i < comments.size(); i++) {
-            addCommentPaneToList(comments.get(i));
-        }
-        scrollPane.setVvalue(0 + 0.00001);
-    }
-
-    public void loadInitialComments() {
+    private void loadInitialComments() {
         commentsPanesList = new ArrayList<>();
         currentMaxDiplayedCommentsCount = Math.min(comments.size(), maxDiplayedCommentsCount);
         lastDisplayedCommentIndex = currentMaxDiplayedCommentsCount;
@@ -116,6 +101,10 @@ public class CommentDisplayerService {
 
     public void setComments(List<Comment> comments) {
         this.comments = comments;
+    }
+
+    public void setProject(Project project) {
+        this.project = project;
     }
 
     private void addCommentPaneToList(Comment comment) {
@@ -135,9 +124,15 @@ public class CommentDisplayerService {
         return badgesLabels;
     }
 
+    private void assignColorToCommentPane(AnchorPane anchorPane, Comment comment){
+        if(comment.getId().compareTo( project.getFirstUpdatedCommentId()) >= 0)//green color displaying
+            anchorPane.setStyle("-fx-background-color: #32CD32");
+    }
+
     private AnchorPane createCommentToDisplay(Comment comment) {
         AnchorPane anchorPane = new AnchorPane();
-        // anchorPane.prefHeight(10000)
+
+        assignColorToCommentPane(anchorPane, comment);
 
         ImageView imageView = new ImageView();
         anchorPane.getChildren().add(imageView);
@@ -190,4 +185,5 @@ public class CommentDisplayerService {
         label.setWrapText(true);
         return label;
     }
+
 }

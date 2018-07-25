@@ -36,6 +36,19 @@ public class ProjectsService {
             e.printStackTrace();
         }
     }
+
+    public void updateProject(Project project){//poprawić tak aby nie zepsuć kolejności
+
+        try {
+            List<Project> projects = jsonFileService.readFromFile(FILE_NAME, Project.class);
+            projects.removeIf(p -> p.getName().equals(project.getName()));
+            projects.add(project);
+            jsonFileService.writeToFile(projects, FILE_NAME);
+        } catch (ParseException | IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public List<Project> getProjects (){
         try {
             return jsonFileService.readFromFile(FILE_NAME, Project.class);

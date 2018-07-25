@@ -57,7 +57,7 @@ public class ProjectsWindowController {
     void updateAllClicked(ActionEvent event) {
         projectsList.forEach(x -> {
             try {
-                commentsService.updateCommentsInFile(x.getUrl(), x.getName());
+                commentsService.updateCommentsInFile(x);
             } catch (UnknownHostException e){
                 errorDisplayer.display("Cannot connect to " + e.getMessage());
             }catch (FileNotFoundException e){
@@ -80,7 +80,7 @@ public class ProjectsWindowController {
         for (int i = 0; i < projectsList.size(); i++) {
             if (selectedProjects.get(i)) {
                 try {
-                    commentsService.updateCommentsInFile(projectsList.get(i).getUrl(), projectsList.get(i).getName());
+                    commentsService.updateCommentsInFile(projectsList.get(i));
                 } catch (UnknownHostException e){
                     errorDisplayer.display("Cannot connect to " + e.getMessage());
                 }catch (FileNotFoundException e){
@@ -112,7 +112,7 @@ public class ProjectsWindowController {
             projectPane.setOnMouseClicked(e -> {
                 if (e.getClickCount() == 2) {
                     List<Comment> comments = commentsService.getAllCommentsFromJsonFile(x.getName());
-                    mainWindowController.displayComments(comments);
+                    mainWindowController.displayComments(comments, x);
                     Stage stage = (Stage) vBox
                             .getScene().getWindow();
                     stage.close();
