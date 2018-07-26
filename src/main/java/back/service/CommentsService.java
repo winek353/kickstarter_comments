@@ -2,6 +2,7 @@ package back.service;
 
 import back.model.Comment;
 import back.model.Project;
+import javafx.concurrent.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -9,6 +10,8 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
 
 @Service("commentsService")
 public class CommentsService {
@@ -20,7 +23,7 @@ public class CommentsService {
 
     private ProjectsService projectsService;
 
-
+    private Long commentNumber;
 
     @Autowired
     public CommentsService(ServerConnectionService serverConnectionService,
@@ -33,23 +36,17 @@ public class CommentsService {
         this.projectsService = projectsService;
     }
 
-//    public CommentsService(ServerConnectionService serverConnectionService,
-//                           CommentsParserService commentsParserService,
-//                           JsonFileService jsonFileService ) {
-//        this.serverConnectionService = serverConnectionService;
-//        this.commentsParserService = commentsParserService;
-//        this.jsonFileService = jsonFileService;
-//    }
-
-    public List<Comment> getAllComments(String kickstarterProjectUrl) throws IOException {
+    public List<Comment> getAllComments(String kickstarterProjectUrl, BiConsumer<Long, Long> updateProgressBarConsumer) throws IOException {
         String toParse = serverConnectionService.getFirstCommentsFromKickstarter(kickstarterProjectUrl).toString();
         String cursor = commentsParserService.getCursorFromHtml(toParse);
-        return getComments(kickstarterProjectUrl, cursor, 0L);
+        commentNumber = Long.valueOf(commentsParserService.getCommentNumberFromHtml(toParse));
+        return getComments(kickstarterProjectUrl, cursor, 0L, updateProgressBarConsumer);
     }
 
-    public void getAllCommentsToJsonFile(String kickstarterProjectUrl, String jsonFileName) throws IOException, ParseException {
+    public void getAllCommentsToJsonFile(String kickstarterProjectUrl, String jsonFileName,
+                                         BiConsumer<Long, Long> updateProgressBarConsumer) throws IOException, ParseException {
         List<Comment> commentList =
-                getAllComments(kickstarterProjectUrl);
+                getAllComments(kickstarterProjectUrl, updateProgressBarConsumer);
         jsonFileService.writeToFile(commentList, jsonFileName);
     }
 
@@ -62,10 +59,11 @@ public class CommentsService {
         return null;
     }
 
-    private List<Comment> getComments(String kickstarterProjectUrl, String cursor,
-                                      final Long boundaryCursor) throws IOException {
+    private List<Comment> getComments(String kickstarterProjectUrl, String cursor, final Long boundaryCursor,
+                                      BiConsumer<Long, Long> updateProgressBarConsumer) throws IOException {
         String toParse;
         List<Comment> commentList = new ArrayList<>();
+        Long i = 0L;
         do{
             toParse = serverConnectionService.getJsonFromKickstarter(kickstarterProjectUrl, cursor).toString();
 
@@ -76,11 +74,28 @@ public class CommentsService {
                     commentList
                             .get(commentList.size()-1)
                             .getId());
+
+            if(updateProgressBarConsumer != null)
+                updateProgressBarConsumer.accept((i+1L)*50, commentNumber);
+            i++;
         }
         while (commentsParserService.isMoreComments(toParse)
                 && boundaryCursor.compareTo(Long.valueOf(cursor)) <=0);
 
         return commentList;
+    }
+
+
+    public Task getAllCommentsToJsonFile2(String kickstarterProjectUrl, String jsonFileName) throws IOException, ParseException {
+        return new Task() {
+            @Override
+            protected Object call() throws Exception {
+                List<Comment> commentList =
+                        getAllComments(kickstarterProjectUrl, (workDone, max) -> updateProgress(workDone, max));
+                jsonFileService.writeToFile(commentList, jsonFileName);
+                return true;
+            }
+        };
     }
 
     public void updateCommentsInFile(String kickstarterProjectUrl, String filename) throws IOException, ParseException {
@@ -93,14 +108,14 @@ public class CommentsService {
 
             String cursor = commentsParserService.getCursorFromHtml(toParse);
 
-            List<Comment> newCommentList = getComments(kickstarterProjectUrl, cursor, newestCursorFromFile);
+            List<Comment> newCommentList = getComments(kickstarterProjectUrl, cursor, newestCursorFromFile, null);
 
             newCommentList.removeIf(comment -> comment.getId().compareTo(newestCursorFromFile)<=0);
             newCommentList.addAll(commentList);
             jsonFileService.writeToFile(newCommentList, filename);
         }
         else
-            getAllCommentsToJsonFile(kickstarterProjectUrl, filename);
+            getAllCommentsToJsonFile(kickstarterProjectUrl, filename, null);
     }
 
     public void updateCommentsInFile(Project project) throws IOException, ParseException {
@@ -114,7 +129,7 @@ public class CommentsService {
 
             String cursor = commentsParserService.getCursorFromHtml(toParse);
 
-            List<Comment> newCommentList = getComments(project.getUrl(), cursor, newestCursorFromFile);
+            List<Comment> newCommentList = getComments(project.getUrl(), cursor, newestCursorFromFile, null);
 
             newCommentList.removeIf(comment -> comment.getId().compareTo(newestCursorFromFile)<=0);
 
@@ -128,6 +143,6 @@ public class CommentsService {
             jsonFileService.writeToFile(newCommentList, filename);
         }
         else
-            getAllCommentsToJsonFile(project.getUrl(), filename);
+            getAllCommentsToJsonFile(project.getUrl(), filename, null);
     }
 }

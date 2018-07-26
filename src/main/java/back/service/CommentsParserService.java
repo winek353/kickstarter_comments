@@ -34,6 +34,11 @@ class CommentsParserService {
         return result;
     }
 
+    String getCommentNumberFromHtml(String toParse){
+        return getDataBetween(toParse, "data-value=\"",
+                "\"").get(0);
+    }
+
     private List<String> getDataBetween(String toParse, String startingPatternQuote, String endingPatternQuote){
         List<String> texts = new ArrayList<String>();
         Pattern p = Pattern.compile(Pattern.quote(startingPatternQuote) + "(.*?)"
