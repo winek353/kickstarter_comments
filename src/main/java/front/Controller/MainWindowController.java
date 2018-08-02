@@ -57,6 +57,7 @@ public class MainWindowController {
             Parent root1 = fxmlLoader.load();
             Stage stage = new Stage();
             stage.setTitle("Projects");
+            stage.setOnCloseRequest(e -> commentDisplayerService.setScrollBarOnOldestUpdatedComment());
             stage.setScene(new Scene(root1));
             stage.show();
 
@@ -71,7 +72,7 @@ public class MainWindowController {
     void displayComments(List<Comment> comments, Project project){
         commentDisplayerService.setComments(comments);
         commentDisplayerService.setProject(project);
-        commentDisplayerService.loadVisiblePanes();
+        commentDisplayerService.loadFirstPanes();
     }
 
 }

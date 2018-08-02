@@ -64,7 +64,8 @@ public class AddNewProjectController {
                 dialog.setScene(scene);
                 dialog.showAndWait();
             });
-
+            progressBar.setVisible(true);
+            progressBar.setManaged(true);
             progressBar.progressProperty().unbind();
             progressBar.progressProperty().bind(commentToJson.progressProperty());
             Thread thread = new Thread(commentToJson);

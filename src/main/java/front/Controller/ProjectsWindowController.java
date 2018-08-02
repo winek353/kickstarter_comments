@@ -7,7 +7,6 @@ import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.stage.Stage;
 import back.model.Comment;
 import back.model.Project;
 import org.springframework.context.ApplicationContext;
@@ -46,11 +45,12 @@ public class ProjectsWindowController {
 
         projectsList = projectsService.getProjects();
 
-        selectedProjects = new ArrayList<Boolean>();
+        selectedProjects = new ArrayList<>();
         if(projectsList != null)
             while (selectedProjects.size() < projectsList.size()) selectedProjects.add(false);
 
         addProjectsToVBox();
+        System.out.println();
     }
 
     @FXML
@@ -70,9 +70,7 @@ public class ProjectsWindowController {
 
     @FXML
     void addNewClicked(ActionEvent event) {
-//        AddNewProjectWindow addNewProjectWindow = new AddNewProjectWindow();
-//        addNewProjectWindow.create();
-//        refreshWindow(); do zrobienia
+        //to do
     }
 
     @FXML
@@ -113,9 +111,10 @@ public class ProjectsWindowController {
                 if (e.getClickCount() == 2) {
                     List<Comment> comments = commentsService.getAllCommentsFromJsonFile(x.getName());
                     mainWindowController.displayComments(comments, x);
-                    Stage stage = (Stage) vBox
-                            .getScene().getWindow();
-                    stage.close();
+
+//                    Stage stage = (Stage) vBox
+//                            .getScene().getWindow();
+//                    stage.close();
                 } else {
                     int i = projectsList.indexOf(x);
                     if (!selectedProjects.get(i)) {

@@ -1,5 +1,6 @@
 package front.service;
 
+import back.model.Comment;
 import back.model.Project;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -7,11 +8,13 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
-import back.model.Comment;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static java.lang.Math.toIntExact;
 
 public class CommentDisplayerService {
     private VBox parent;
@@ -20,8 +23,11 @@ public class CommentDisplayerService {
     private Project project;
     private List<Comment> comments;
     private int maxDiplayedCommentsCount = 200;
-    private int currentMaxDiplayedCommentsCount = 0;
+
     private int lastDisplayedCommentIndex = 0;
+    private int firstDisplayedCommentIndex = 0;
+
+    private int updatedCommentsIncommentsPanesList = 0;
 
     public CommentDisplayerService(VBox parent, ScrollPane scrollPane) {
         this.parent = parent;
@@ -34,67 +40,98 @@ public class CommentDisplayerService {
     }
 
     private void removeBottomPanes() {
-        commentsPanesList.remove(currentMaxDiplayedCommentsCount - 1);
-        parent.getChildren().remove(currentMaxDiplayedCommentsCount - 1);
+        commentsPanesList.remove(commentsPanesList.size() -1 /*currentMaxDiplayedCommentsCount - 1*/);
+        parent.getChildren().remove(commentsPanesList.size() -1);
     }
 
     private boolean shouldAddPanesOnBottom() {
         double scrollBarPosition = scrollPane.getVvalue();
-        if (scrollBarPosition > 1. - 20 / scrollPane.getHeight() && comments.size() != lastDisplayedCommentIndex) {
-            return true;
-        }
-        return false;
+
+        return scrollBarPosition > 1. - 20 / scrollPane.getHeight() && comments.size() != lastDisplayedCommentIndex;
     }
 
     private boolean shouldAddPanesOnTop() {
         double scrollBarPosition = scrollPane.getVvalue();
-        if (scrollBarPosition < 20 / scrollPane.getHeight() && lastDisplayedCommentIndex > currentMaxDiplayedCommentsCount) {
-            return true;
-        }
-        return false;
+        System.out.println(firstDisplayedCommentIndex);
+        return (commentsPanesList.size()<8 || scrollBarPosition < 3 / scrollPane.getHeight() )
+                && firstDisplayedCommentIndex > 0;
     }
 
     private void addPanesOnBottom() {
         addCommentPaneToList(comments.get(lastDisplayedCommentIndex++));
+        firstDisplayedCommentIndex++;
         parent.applyCss();
         parent.layout();
     }
 
     private void addPanesOnTop() {
-        Comment comment = comments.get(lastDisplayedCommentIndex - currentMaxDiplayedCommentsCount - 1);
+        Comment comment = comments.get(firstDisplayedCommentIndex - 1);
         AnchorPane a = createCommentToDisplay(comment);
         commentsPanesList.add(0, a);
         parent.getChildren().add(0, a);
         a.applyCss();
         a.layout();
         lastDisplayedCommentIndex--;
+        firstDisplayedCommentIndex--;
         parent.applyCss();
         parent.layout();
     }
 
-    public void loadVisiblePanes() {
+    private int countUpdatedCommentsNumber(){
+        return toIntExact(comments.stream().filter(c->c.getId().compareTo( project.getFirstUpdatedCommentId()) >= 0 ).count());
+    }
 
-        if (commentsPanesList == null) {
-            loadInitialComments();
+    public void loadFirstPanes(){
+        loadInitialComments(countUpdatedCommentsNumber());
+    }
+
+    //working only when the comments are already loaded to main window!
+    private double computeUpdatedCommentsHeight(){
+        return commentsPanesList
+                .stream()
+                .limit(updatedCommentsIncommentsPanesList)
+                .mapToDouble(Region::getHeight)
+                .sum();
+    }
+    private double computeAllCommentsHeight(){
+        return commentsPanesList
+                .stream()
+                .mapToDouble(Region::getHeight)
+                .sum();
+    }
+
+
+    public void setScrollBarOnOldestUpdatedComment(){
+        if(commentsPanesList != null && !commentsPanesList.isEmpty()){
+            double position = computeUpdatedCommentsHeight() / computeAllCommentsHeight();
+
+            scrollPane.setVvalue(position - 0.02);
         }
+    }
+
+    public void loadVisiblePanes() {
         if (shouldAddPanesOnBottom()) {
             addPanesOnBottom();
-            removeTopPanes();
+            if(commentsPanesList.size()> maxDiplayedCommentsCount)
+                removeTopPanes();
             scrollPane.setVvalue(scrollPane.getVvalue() - 20 / parent.getHeight());//poprawić
         }
         if (shouldAddPanesOnTop()) {
             addPanesOnTop();
-            removeBottomPanes();
+            if(commentsPanesList.size()> maxDiplayedCommentsCount)
+                removeBottomPanes();
             scrollPane.setVvalue(scrollPane.getVvalue() + 20 / parent.getHeight());
         }
     }
 
-    private void loadInitialComments() {
+    private void loadInitialComments(int position) {
+        firstDisplayedCommentIndex = position-10;
+        if(firstDisplayedCommentIndex < 0)
+            firstDisplayedCommentIndex = 0;
         commentsPanesList = new ArrayList<>();
-        currentMaxDiplayedCommentsCount = Math.min(comments.size(), maxDiplayedCommentsCount);
-        lastDisplayedCommentIndex = currentMaxDiplayedCommentsCount;
+        lastDisplayedCommentIndex = Math.min(comments.size(), maxDiplayedCommentsCount + firstDisplayedCommentIndex);
         parent.getChildren().clear();
-        for (int i = 0; i < currentMaxDiplayedCommentsCount && i < comments.size(); i++) {
+        for (int i = firstDisplayedCommentIndex; i < lastDisplayedCommentIndex; i++) {
             addCommentPaneToList(comments.get(i));
         }
     }
@@ -108,6 +145,8 @@ public class CommentDisplayerService {
     }
 
     private void addCommentPaneToList(Comment comment) {
+        if(comment.getId().compareTo( project.getFirstUpdatedCommentId()) >= 0 )
+            updatedCommentsIncommentsPanesList++;
         AnchorPane a = createCommentToDisplay(comment);
         commentsPanesList.add(a);
         parent.getChildren().add(a);
@@ -138,7 +177,7 @@ public class CommentDisplayerService {
         anchorPane.getChildren().add(imageView);
         HBox hBox = new HBox();
         hBox.setLayoutX(45);
-        hBox.setLayoutY(28);
+        hBox.setLayoutY(10);
         hBox.setSpacing(6);
         Label label = createUsernameLAbel(comment.getAuthor());
 
@@ -178,10 +217,10 @@ public class CommentDisplayerService {
     private Label createCommentLabel(String text) {
         Label label = new Label();
         label.setAlignment(Pos.TOP_LEFT);
-        label.setText(text);
+        label.setText(text+"\n"+"\n");
         label.setLayoutX(45);
-        label.setLayoutY(70);
-        label.setPrefWidth(400);
+        label.setLayoutY(28);
+        label.setPrefWidth(450);
         label.setWrapText(true);
         return label;
     }
