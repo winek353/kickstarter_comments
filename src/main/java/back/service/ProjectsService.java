@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 @Service("projectsService")
@@ -29,7 +29,7 @@ public class ProjectsService {
         try {
             List<Project> projects = jsonFileService.readFromFile(FILE_NAME, Project.class);
             if(projects == null)
-                projects = new ArrayList<>();
+                projects = new LinkedList<>();
             projects.add(project);
             jsonFileService.writeToFile(projects, FILE_NAME);
         } catch (ParseException | IOException e) {

@@ -17,7 +17,7 @@ public class SpringMain {
         ProjectsService projectsService =
                 (ProjectsService) ctx.getBean("projectsService");
 
-        String kickstarterProjectUrl = "https://www.kickstarter.com/projects/bdgames/assault-on-doomrock-doompocalypse";
+        String kickstarterProjectUrl = "https://www.kickstarter.com/projects/gonab/tang-garden";
 //        List<Comment> comments = commentsService.getAllComments(kickstarterProjectUrl);
 //        comments.forEach(c-> System.out.println(c));
 //        System.out.println(comments.size());

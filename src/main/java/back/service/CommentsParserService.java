@@ -4,8 +4,8 @@ import back.model.Comment;
 import org.jsoup.Jsoup;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -15,7 +15,7 @@ class CommentsParserService {
     private static List<String> allBadges = Arrays.asList("Creator", "Collaborator", "Superbacker", "20-time creator");
 
     private List<String> extractComments(String toParse, String startingPatternQuote, String endingPatternQuote){
-        List<String> comments = new ArrayList<>();
+        List<String> comments = new LinkedList<>();
         Pattern p = Pattern.compile(Pattern.quote(startingPatternQuote) + "(.*?)"
                 + Pattern.quote(endingPatternQuote));
         Matcher m = p.matcher(toParse);
@@ -40,7 +40,7 @@ class CommentsParserService {
     }
 
     private List<String> getDataBetween(String toParse, String startingPatternQuote, String endingPatternQuote){
-        List<String> texts = new ArrayList<String>();
+        List<String> texts = new LinkedList<>();
         Pattern p = Pattern.compile(Pattern.quote(startingPatternQuote) + "(.*?)"
                 + Pattern.quote(endingPatternQuote));
         Matcher m = p.matcher(toParse);
@@ -52,7 +52,7 @@ class CommentsParserService {
     }
 
     private List<String> getBadges(String toParse){
-        List<String> badges = new ArrayList<>();
+        List<String> badges = new LinkedList<>();
 
         for (String badge: allBadges) {
             if(toParse.contains(badge))
@@ -95,8 +95,9 @@ class CommentsParserService {
     }
 
     private boolean isCommentValid(String comment){
-         if(comment.contains("This comment has been removed by Kickstarter") ||
-                 comment.contains("The author of this comment has been deleted"))
+         if(comment.contains("This comment has been removed by Kickstarter")
+                 || comment.contains("The author of this comment has been deleted")
+                 || comment.contains("This user's account has been deleted"))
              return false;
          else
              return true;
@@ -111,9 +112,10 @@ class CommentsParserService {
         List<String> rawCommentsToParse = extractComments(toParse, "class=\\\"main clearfix pl3 ml3\\",
                 "<span class=\\\"loading icon-loading-small");
 
-        List<Comment> commentList = new ArrayList<>();
+        List<Comment> commentList = new LinkedList<>();
         for (String commentToParse: rawCommentsToParse) {
             if(isCommentValid(commentToParse)){
+//                System.out.println(commentToParse);
                 Long id = Long.valueOf(getDataBetween(commentToParse,
                         "#comment-",  "\\").get(0));
                 String author = getAuthor(commentToParse);

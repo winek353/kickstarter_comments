@@ -8,10 +8,9 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.function.BiConsumer;
-import java.util.function.Function;
 
 @Service("commentsService")
 public class CommentsService {
@@ -62,7 +61,7 @@ public class CommentsService {
     private List<Comment> getComments(String kickstarterProjectUrl, String cursor, final Long boundaryCursor,
                                       BiConsumer<Long, Long> updateProgressBarConsumer) throws IOException {
         String toParse;
-        List<Comment> commentList = new ArrayList<>();
+        List<Comment> commentList = new LinkedList<>();
         Long i = 0L;
         do{
             toParse = serverConnectionService.getJsonFromKickstarter(kickstarterProjectUrl, cursor).toString();
@@ -75,8 +74,13 @@ public class CommentsService {
                             .get(commentList.size()-1)
                             .getId());
 
-            if(updateProgressBarConsumer != null)
-                updateProgressBarConsumer.accept((i+1L)*50, commentNumber);
+            if(updateProgressBarConsumer != null){
+                if((i+1L)*50 > commentNumber)
+                    updateProgressBarConsumer.accept(commentNumber, commentNumber);
+                else
+                    updateProgressBarConsumer.accept((i+1L)*50, commentNumber);
+            }
+
             i++;
         }
         while (commentsParserService.isMoreComments(toParse)

@@ -52,7 +52,7 @@ public class CommentDisplayerService {
 
     private boolean shouldAddPanesOnTop() {
         double scrollBarPosition = scrollPane.getVvalue();
-        System.out.println(firstDisplayedCommentIndex);
+
         return (commentsPanesList.size()<8 || scrollBarPosition < 3 / scrollPane.getHeight() )
                 && firstDisplayedCommentIndex > 0;
     }

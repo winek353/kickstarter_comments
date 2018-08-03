@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
 
-<AnchorPane prefHeight="155.0" prefWidth="250.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="front.Controller.AddNewProjectController">
+<AnchorPane prefHeight="146.0" prefWidth="250.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="front.Controller.AddNewProjectController">
     <children>
         <TextField id="inputURL" fx:id="inputUrl" layoutX="50.0" layoutY="14.0" prefHeight="25.0" prefWidth="189.0">
         </TextField>
@@ -14,6 +15,7 @@
         </Button>
       <Label layoutX="14.0" layoutY="18.0" text="URL" />
       <Label layoutX="14.0" layoutY="53.0" text="Name" />
-      <ProgressBar fx:id="progressBar" managed="false" layoutX="25.0" layoutY="86.0" prefWidth="200.0" progress="0.0" visible="false" />
+      <ProgressBar fx:id="progressBar" layoutX="25.0" layoutY="86.0" managed="false" prefWidth="200.0" progress="0.0" visible="false" />
+      <Label fx:id="progressLabel" layoutX="25.0" layoutY="105.0" prefHeight="17.0" prefWidth="115.0" visible="false" />
     </children>
 </AnchorPane>
